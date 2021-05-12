@@ -14,11 +14,7 @@ export class OpenInfoWindow {
     const { parent, content } = option;
     this.componentParent = parent
     this.infoWindowContent = content;
-     if (typeof content === "object") {
-      this.isVue = true;
-
-      // document.getElementById(this.id).appendChild(instance.vm.$el);
-    }
+     
   }
   initVueContent(content, data) {
     let propsData = {
@@ -124,6 +120,10 @@ export function showInfoWindow(id, option, map) {
   if (!coordinate) {
     coordinate = event.feature.getGeometry().getCoordinates();
   }
+  if (typeof content === "object") {
+    indowWindowList[id].isVue = true;
 
+    // document.getElementById(this.id).appendChild(instance.vm.$el);
+  }
   indowWindowList[id].showInfoWinodow(coordinate, data, title);
 }

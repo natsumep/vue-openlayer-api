@@ -64,6 +64,73 @@ export default {
 				switch: true,
 				control: true,
 			});
+
+			this.map.on("click",(evt)=>{
+      let selectLayer = []; 
+      this.map.forEachLayerAtPixel(evt.pixel, (layer) => {
+        if (layer) {
+            selectLayer.push(layer) ;
+          }
+      }, {
+          // layerFilter: (layer) => {
+					
+          // }
+			});
+			const featureLayer = [];
+			if(!selectLayer.length)return 
+			selectLayer.forEach(layer=>{
+				 this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                if (feature) {
+                   featureLayer.push({layer,feature});
+                }
+            }, {
+                layerFilter: function (lay) {
+                  return lay === layer;
+                }
+            });
+			})
+			for(let i = 0;i<featureLayer.length;i++){
+				if(featureLayer[i].layer.eventOnClick){
+					const v = featureLayer[i].layer.eventOnClick({
+						data:{data:featureLayer[i].feature.values_},
+						originalEvent:evt.originalEvent,
+						feature:featureLayer[i].feature
+					})
+					if(v === false)return;
+				}
+			}
+      // if (selectLayer) {
+      //   if (selectLayer instanceof OlVectorLayer || selectLayer instanceof OlVectorTileLayer) {
+      //       var selectFeature_1;
+      //       this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+      //           if (feature) {
+      //               selectFeature_1 = feature;
+      //               return true;
+      //           }
+      //       }, {
+      //           layerFilter: function (layer) {
+      //               return layer === selectLayer;
+      //           }
+      //       });
+      //       if (selectFeature_1) {
+      //           var data = void 0;
+      //           if (selectLayer instanceof ClusterVectorLayer) {
+      //               data = selectFeature_1.get('features').map(function (item) { return item.getProperties(); });
+      //           }
+      //           else {
+      //               data = selectFeature_1.getProperties();
+      //           }
+      //           this.showInfoWinodow({
+      //             type: evt.type,
+      //             feature: selectFeature_1,
+      //             data: data,
+      //             originEvent: evt
+      //         });
+      //       }
+      //   }
+      // }
+
+    });
 			this.layerInfo = new LayerService(this.map);
 			this.$emit("map-init",this);
 			// this.showPoints([[113.137599, 23.031483]]);

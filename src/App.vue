@@ -92,7 +92,7 @@ export default {
 			this.showPoints();
 		},
 		showPoints(){
-			 this.createLayer('dataLayer','dataLayer_id',(data,event)=>{
+			 this.createLayer('dataLayer','dataLayer_id',(event,data)=>{
 				//  this._map.showInfoWindow("dataLayer_id",{
 				// 	 content:"<div>${value}</div>"+ +new Date(),
 				// 	 title:"123123",
@@ -107,7 +107,7 @@ export default {
 					 }
 				 }
 			 )});
-			this.createLayer('moreStyleLayer','moreStyleLayer_id',(event)=>{ this._map.showInfoWindow("dataLayer_id",{
+			this.createLayer('moreStyleLayer','moreStyleLayer_id',(event)=>{ this._map.showInfoWindow("moreStyleLayer_id",{
 					 content:`<div>\${value}</div>`,
 					 title:"我是title",
 					 event,
@@ -128,7 +128,7 @@ export default {
         }
         }],{
 				text:{
-					text:"data",
+					text:"点1",
 					fill:{
 					},
 				},

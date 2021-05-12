@@ -18,13 +18,19 @@ export class LayerService{
       //   callback && callback(e.data,e)
       //   console.log(e)
       // })
-      this.layerList[id].on("singleclick",(e)=>{
-        e.data.data && e.data.data.click && e.data.data.click(e,e.data,)
-        callback && callback(e,e.data,)
-      })
+      this.layerList[id].eventOnClick = (e)=>{
+        let v ,c;
+        if(e.data && e.data.data && e.data.data.click){
+          v =  e.data.data.click(e,e.data,)
+        }
+        if(callback){
+          c = callback(e,e.data,) 
+        }
+        if(v === false  || c === false){
+          return false
+        }
+      }
       this.map.addLayer(vectorLayer);
-
-      
     }
     return {layer:this.layerList[id],id}
   }
