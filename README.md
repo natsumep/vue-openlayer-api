@@ -2,6 +2,7 @@
 ### 如何使用
 将src下的assets中的所有文件 和 components下的map移动到项目中对应的文件夹中。
 demo 参考 app.vue 中的使用
+> 部分组件依赖了 element-ui 
 ### 加载地图组件
 
 ```js
