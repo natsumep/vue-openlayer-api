@@ -1,7 +1,7 @@
 ## 地图组件开发文档参考
 ### 如何使用
 将src下的assets中的所有文件 和 components下的map移动到项目中对应的文件夹中。
-
+demo 参考 app.vue 中的使用
 ### 加载地图组件
 
 ```js
@@ -90,24 +90,24 @@ export default {
   data(){
     return {
       _map:null,
-			dataLayer:{}
+      dataLayer:{}
     }
   },
   methods: {
     // 必须要在地图渲染完毕的回调中使用！！！ 否则可能拿不到地图实例~
     mapInit(evt){
 			this._map = evt;
-			const dataLayer = this.createLayer('data');
+      const dataLayer = this.createLayer('data');
       this._map.showOneStylePoints([[113.137599, 23.031483],[113.136599, 23.021483]],{
-				text:{
-					text:"data"
-				}
-			},this.dataLayer.data)
-		},
-		createLayer(name){
-			const layer = this._map.createLayer();
-			this.dataLayer[name]=layer;
-		}
+        text:{
+          text:"data"
+        }
+      },this.dataLayer.data)
+    },
+    createLayer(name){
+      const layer = this._map.createLayer();
+      this.dataLayer[name]=layer;
+    }
   },
 
 ```
