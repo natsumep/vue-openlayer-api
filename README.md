@@ -1,4 +1,6 @@
 ## 地图组件开发文档参考
+### 如何使用
+将src下的assets中的所有文件 和 components下的map移动到项目中对应的文件夹中。
 
 ### 加载地图组件
 
@@ -74,13 +76,13 @@ Vue.component('MapView', MapView)；
 > 特殊说明: 图层的点击事件 会返回当前点击的元素的坐标信息和传入的 data 数据~ 如果给渲染的元素绑定了事件，两个都会触发
 
 #### clickCallback(e,data) 参数说明
-|参数|类型| 说明|
-|-|-|-|
-|e|object| 返回点击的一些信息，在创建弹窗传入可以通过传入e 而省略掉coordinate和data的传入|
-|e.originEvent| object| 类似click 的event，通常用不上 |
-|e.data| any| 和下方的data是同一个对象 |
-|data|any|点击的要素 渲染时传入的data数据，没有为null|
 
+| 参数          | 类型   | 说明                                                                                |
+| ------------- | ------ | ----------------------------------------------------------------------------------- |
+| e             | object | 返回点击的一些信息，在创建弹窗传入可以通过传入 e 而省略掉 coordinate 和 data 的传入 |
+| e.originEvent | object | 类似 click 的 event，通常用不上                                                     |
+| e.data        | any    | 和下方的 data 是同一个对象                                                          |
+| data          | any    | 点击的要素 渲染时传入的 data 数据，没有为 null                                      |
 
 ```js
 // 创建图层
@@ -114,10 +116,10 @@ export default {
 
 > 目前支持渲染同一个样式的多个点，和不同样式的多点组合
 
-| 方法名              | 说明                   | 参数                                                   | 返回 | 调用                                          |
-| ------------------- | ---------------------- | ------------------------------------------------------ | ---- | --------------------------------------------- | -------------------------------------------------------------------- |
-| showOneStylePoints  | 渲染同一个样式的多个点 | (coordinates,style,layerid)经纬度点数组，样式，图层 id | void | (coordinates: coordinate[]                    | {point:coordinate,data:any}[] ,style:iconStyle,layerid:string)=>void |
-| showMoerStylePoints | 渲染不同样式的多点组合 | (pointsInfo,layerid)点数组，图层 id                    | void | (pointsInfo:pointInfo[],layerid:string)=>void |
+| 方法名              | 说明                   | 参数                                                   | 返回 | 调用                                                                                            |
+| ------------------- | ---------------------- | ------------------------------------------------------ | ---- | ----------------------------------------------------------------------------------------------- |
+| showOneStylePoints  | 渲染同一个样式的多个点 | (coordinates,style,layerid)经纬度点数组，样式，图层 id | void | (coordinates: coordinate[] {point:coordinate,data:any}[] ,style:iconStyle,layerid:string)=>void |
+| showMoerStylePoints | 渲染不同样式的多点组合 | (pointsInfo,layerid)点数组，图层 id                    | void | (pointsInfo:pointInfo[],layerid:string)=>void                                                   |
 
 ##### coordinates
 
@@ -182,14 +184,14 @@ export default {
 
 > 样式的具体配置
 
-| 名称         | 类型          | 说明                                                               |
-| ------------ | ------------- | ------------------------------------------------------------------ | --- | --------------------------------------- |
-| src          | string        | 设置自定义图片路径，否则使用默认图片                               |
-| size         | Array<number> | 设置图片的大小，第一个元素代表宽度，第二个代表高度，一般不需要设置 |
-| offset       | Array<number> | 图片偏移，默认[0, 0]，一般不需要设置                               |
-| offsetOrigin | string        | 偏移原点，可选值 bottom-left，bottom-right，top-left，             |     | top-right，默认 top-left 一般不需要设置 |
-| opacity      | number        | icon 透明度，默认 1                                                |
-| scale        | number        | 缩放程度，默认 1，如果图片大小刚好 ，可以不用设置                  |
+| 名称         | 类型          | 说明                                                                                          |
+| ------------ | ------------- | --------------------------------------------------------------------------------------------- |
+| src          | string        | 设置自定义图片路径，否则使用默认图片                                                          |
+| size         | Array<number> | 设置图片的大小，第一个元素代表宽度，第二个代表高度，一般不需要设置                            |
+| offset       | Array<number> | 图片偏移，默认[0, 0]，一般不需要设置                                                          |
+| offsetOrigin | string        | 偏移原点，可选值 bottom-left，bottom-right，top-left, top-right，默认 top-left 一般不需要设置 |
+| opacity      | number        | icon 透明度，默认 1                                                                           |
+| scale        | number        | 缩放程度，默认 1，如果图片大小刚好 ，可以不用设置                                             |
 
 ##### InnerTextOptions
 
@@ -350,35 +352,35 @@ export default {
 | showMoerStylePolygon | -    | 渲染多种样式的线数组 |
 | showOneStylePolygon  | -    | 渲染同种样式的先数组 |
 
-
-
 #### 加载地图弹窗
+
 > 弹窗内容目前支持两种形式，一种是传入一段 `dom` 结构, 内部通过 `innerHTML` 的形式插入
 > 另一种是 通过传入一个 `Vue` 组件 的形式传入，保留了 `Vue` 的响应式。
 
 ##### api
-| 名称                 | 类型 | 说明                 |
-| -------------------- | ---- | -------------------- |
-| showInfoWindow| showInfoWindow(id,option) | 传入一个坐标和 内容 和 title 生成一个弹窗|
+
+| 名称           | 类型                      | 说明                                      |
+| -------------- | ------------------------- | ----------------------------------------- |
+| showInfoWindow | showInfoWindow(id,option) | 传入一个坐标和 内容 和 title 生成一个弹窗 |
 
 ##### showInfoWindow 参数说明
 
-| 名称                 | 类型 | 说明                 |
-|-|-|-|
-|id| string| 必传，同一个id的弹窗不会重复弹出，只会移动位置，如果需要弹出多个，需要传入不同的id|
-|option| object| -|
-|option.content| string/vueComponetn| 支持传入 dom 字符串和vue组件，填充到内容区|
-|option.title|string| 弹窗的title|
-|option.event| 地图点击事件的 event | 弹窗可以通过这个event 获取到 coordinate 和 data|
-|option.coordinate| coordinate[]| 弹窗的坐标位置，如果传入该字段 ，会忽略event中的坐标 |
-|option.data| 如果content是vue组件，那么data的所有字段会通过props的形式传入到组件中，组件必须要在props中声明对应的变量接收，如果是字符串dom 会通过对应的key替换dom字符串中的${key}|
-|option.onClose| function| 弹窗关闭的回调事件|
+| 名称              | 类型                                                                                                                                                                                | 说明                                                                                  |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| id                | string                                                                                                                                                                              | 必传，同一个 id 的弹窗不会重复弹出，只会移动位置，如果需要弹出多个，需要传入不同的 id |
+| option            | object                                                                                                                                                                              | -                                                                                     |
+| option.content    | string/vueComponetn                                                                                                                                                                 | 支持传入 dom 字符串和 vue 组件，填充到内容区                                          |
+| option.title      | string                                                                                                                                                                              | 弹窗的 title                                                                          |
+| option.event      | 地图点击事件的 event                                                                                                                                                                | 弹窗可以通过这个 event 获取到 coordinate 和 data                                      |
+| option.coordinate | coordinate[]                                                                                                                                                                        | 弹窗的坐标位置，如果传入该字段 ，会忽略 event 中的坐标                                |
+| option.data       | 如果 content 是 vue 组件，那么 data 的所有字段会通过 props 的形式传入到组件中，组件必须要在 props 中声明对应的变量接收，如果是字符串 dom 会通过对应的 key 替换 dom 字符串中的${key} |
+| option.onClose    | function                                                                                                                                                                            | 弹窗关闭的回调事件                                                                    |
 
-> ps dom字符串中如果存在 ${name} 同时 data中存在name 属性 ，那么会dom中的 ${name } 替换成 data中的name的值； 起到一个插值替换的效果。
+> ps dom 字符串中如果存在 ${name} 同时 data 中存在 name 属性 ，那么会 dom 中的 ${name } 替换成 data 中的 name 的值； 起到一个插值替换的效果。
+
 ```js
-let content = '<div>${name}</div>'
-let data = {name:"test"};
+let content = "<div>${name}</div>";
+let data = { name: "test" };
 // 渲染成
 // '<div>test</div>'
-
 ```
