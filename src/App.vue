@@ -7,6 +7,7 @@
 <script>
 import MapView from "./components/map/MapView.vue";
 import textC from "./components/Test.vue";
+import iconPng from "./assets/images/map-layer.png"
 export default {
   name: "App",
   data(){
@@ -132,10 +133,12 @@ export default {
 					fill:{
 					},
 				},
+				icon:{
+					src:iconPng
+				},
 				circle:{
 
 				},
-				type:"circle"
       },this.dataLayer.dataLayer)
       
       // 根据不同的类型显示不同的点的样式
@@ -253,6 +256,18 @@ export default {
        ],
        this.dataLayer.lineLayers
        )
+		},
+		showClustePoint(){
+			 this.dataLayer.ClusterLayer = this._map.createClusterLayer('ClusterLayer',option,(event,data)=>{
+				 this._map.showInfoWindow("dataLayer_id",{
+					 content:textC,
+					 title:"123123",
+					 event,
+					 onClose(){
+						 console.log('123123123213sdfdsf')
+					 }
+				 }
+			 )});
 		}
   },
 };

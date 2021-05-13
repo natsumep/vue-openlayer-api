@@ -221,6 +221,10 @@ export default {
 			const layer=  this.layerInfo.createLayer(id,callback);
 			return layer.id;
 		},
+		createClusterLayer(id,option,callback){
+			const layer=  this.layerInfo.createClusterLayer(id,option,callback);
+			return layer.id;
+		},
 		removeLayer(id){
 			if(id && this.layerInfo.layerList[id]){
 				this.layerInfo.destroyLayer(id);

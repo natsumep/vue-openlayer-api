@@ -24,16 +24,19 @@ function getPointStyle(style = {}) {
   const {type }= style;
   const s = {
     icon:{
-      ...style.icon,
       ...defaultPointStyle.icon,
+
+      ...style.icon,
     },
     text:{
-      ...style.text,
       ...defaultPointStyle.text,
+
+      ...style.text,
     },
     circle:{
-      ...style.circle,
       ...defaultPointStyle.circle,
+
+      ...style.circle,
     }
   };
   if(type === "circle"){
