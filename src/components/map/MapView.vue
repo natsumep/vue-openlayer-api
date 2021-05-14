@@ -26,6 +26,7 @@ import {
 	showLines,
 	showPolygons,
 	showClusterPoints,
+	showHeatMapPoints,
 } from "./service/operationMap";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
@@ -210,6 +211,14 @@ export default {
 		createClusterLayer(id, option, callback) {
 			const layer = this.layerInfo.createClusterLayer(id, option, callback);
 			return layer.id;
+		},
+		createHeatMapLayer(id,option){
+			const layer = this.layerInfo.createHeatmap(id, option);
+			return layer.id;
+		},
+		showHeatMapPoints(layerId,points){
+			const layer = this.layerInfo.getLayerById(layerId);
+			showHeatMapPoints(layer, points);
 		},
 		removeLayer(id) {
 			if (id && this.layerInfo.layerList[id]) {

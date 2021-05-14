@@ -1,9 +1,15 @@
 import * as SMap from "@/assets/plugin/map.js";
-const { VectorLayer, ClusterVectorLayer, IconStyle, getClusterStyle } = SMap;
+const {
+  VectorLayer,
+  ClusterVectorLayer,
+  IconStyle,
+  getClusterStyle,
+  Heatmap,
+} = SMap;
 // import {VectorLayer ,ClusterVectorLayer ,  IconStyle , getClusterStyle} from 'slol';
 
 import { getUUID } from "./utils";
-import { getPointStyle,  } from "./operationMap";
+import { getPointStyle } from "./operationMap";
 const defaultClusterOption = {
   distance: 100,
   minClusterResolution: 0.000005364418029785156,
@@ -92,7 +98,7 @@ export class LayerService {
           null;
         if (!style) {
           const s = getPointStyle(option.singleStyle || {});
-          return s
+          return s;
         }
         return getPointStyle(style);
       };
@@ -112,6 +118,28 @@ export class LayerService {
       };
       this.map.addLayer(vectorLayer);
     }
+    return { layer: this.layerList[id], id };
+  }
+
+  createHeatmap(id, option) {
+    if (!this.layerList[id]) {
+      const {
+        gradient = ['#0000ff', '#0ff', '#0f0', '#ff0', '#f00'],
+        radius = 8,
+        blur = 15,
+      } = option;
+      const v = new VectorLayer().getSource();
+      this.layerList[id] = new Heatmap({
+        source: v,
+        blur,
+        radius,
+        gradient,
+        weight: function (feature) {
+          return true;
+        },
+      });
+    }
+    this.map.addLayer(this.layerList[id]);
     return { layer: this.layerList[id], id };
   }
 }

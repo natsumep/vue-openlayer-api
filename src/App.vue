@@ -125,6 +125,7 @@ export default {
 			this.showLines();
 			this.showPoints();
 			this.showClustePoint();
+			this.showHeatMap();
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -380,6 +381,22 @@ export default {
 			}
 			this._map.showClusterPoints(fs, this.dataLayer.ClusterLayer);
 		},
+		showHeatMap(){
+			this.dataLayer.HeatMap = this._map.createHeatMapLayer("HeatMap",{
+				gradient : ['#0000ff', '#0ff', '#0f0', '#ff0', '#f00'],
+				radius : 8,
+				blur : 15,
+			});
+			 var fs = [];
+    while (fs.length < 11110) {
+      fs.push([
+          113.235599 + fs.length * Math.random()*.0001,
+          23.121483 + fs.length * Math.random()*.0001,
+        ]
+        );
+    }
+			this._map.showHeatMapPoints(this.dataLayer.HeatMap,fs)
+		}
 	},
 };
 </script>

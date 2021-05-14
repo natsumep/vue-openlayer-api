@@ -118,5 +118,9 @@ export function showPolygons(vectorLayer, polygons, style){
   vectorLayer.addFeatures(multiLineFeature);
 }
 
+export function showHeatMapPoints(vectorLayer,points){
+  vectorLayer.getSource().addFeatures(points.map(item=>new PointFeature({coordinate:item})))
+}
+
 
 export function showClusterPoint() {}
