@@ -127,10 +127,8 @@ export function showInfoWindow(id, option, map) {
     indowWindowList[id].setContent(content, title, data);
   }
   onClose && (indowWindowList[id].onClose = onClose);
-  if (typeof content === "object") {
-    indowWindowList[id].isVue = true;
-
+    indowWindowList[id].isVue = (typeof content === "object");
+    indowWindowList[id].infoWindowContent = content;
     // document.getElementById(this.id).appendChild(instance.vm.$el);
-  }
   indowWindowList[id].showInfoWinodow(coordinate, data, title);
 }

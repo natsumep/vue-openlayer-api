@@ -31,7 +31,10 @@ import {
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
 import { showInfoWindow } from "./service/infoWindow";
-
+import * as SMap from "@/assets/plugin/map.js";
+const {
+  Heatmap,
+} = SMap;
 export default {
 	components: {
 		SelectBox,
@@ -72,17 +75,20 @@ export default {
 			});
 
 			this.map.on("click", (evt) => {
+				console.log(this,this.map)
 				let selectLayer = [];
 				this.map.forEachLayerAtPixel(
 					evt.pixel,
 					(layer) => {
 						if (layer) {
+							console.log(1);
 							selectLayer.push(layer);
 						}
 					},
 					{
-						// layerFilter: (layer) => {
-						// }
+						layerFilter: (layer) => {
+							return !(layer instanceof Heatmap);
+						}
 					}
 				);
 				const featureLayer = [];
