@@ -91,7 +91,7 @@ export class MapService {
     // this.getBaseLayers().forEach((item) => {
     //   this.map.addLayer(item);
     // });
-    this.getFoShanMap();
+    // this.getFoShanMap();
     const centerAndZoomControl =new CenterAndZoomControl();
     centerAndZoomControl.setCenterAndZoom(center, 12);
     // 将控件添加到地图上

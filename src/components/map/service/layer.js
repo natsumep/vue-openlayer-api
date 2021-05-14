@@ -1,22 +1,22 @@
 import * as SMap from "@/assets/plugin/map.js";
-const {VectorLayer ,ClusterVectorLayer ,  IconStyle} = SMap;
-import { getUUID } from "./utils"
+const { VectorLayer, ClusterVectorLayer, IconStyle, getClusterStyle } = SMap;
+// import {VectorLayer ,ClusterVectorLayer ,  IconStyle , getClusterStyle} from 'slol';
 
-const defaultClusterOption={
-  distance:100,
-  minClusterResolution:17,
-  canOffsetSingles: true,
-}
+import { getUUID } from "./utils";
+import { getPointStyle,  } from "./operationMap";
+const defaultClusterOption = {
+  distance: 100,
+  minClusterResolution: 0.000005364418029785156,
+};
 
-
-export class LayerService{
+export class LayerService {
   map = null;
-  layerList = {}
-  constructor(map){
+  layerList = {};
+  constructor(map) {
     this.map = map;
   }
-  createLayer(id = getUUID(),callback){
-    if(!this.layerList[id]){
+  createLayer(id = getUUID(), callback) {
+    if (!this.layerList[id]) {
       const vectorLayer = new VectorLayer({
         id,
       });
@@ -26,82 +26,98 @@ export class LayerService{
       //   callback && callback(e.data,e)
       //   console.log(e)
       // })
-      this.layerList[id].eventOnClick = (e)=>{
-        let v ,c;
-        if(e.data && e.data.data && e.data.data.click){
-          v =  e.data.data.click(e,e.data,)
+      this.layerList[id].eventOnClick = (e) => {
+        let v, c;
+        if (e.data && e.data.data && e.data.data.click) {
+          v = e.data.data.click(e, e.data);
         }
-        if(callback){
-          c = callback(e,e.data,) 
+        if (callback) {
+          c = callback(e, e.data);
         }
-        if(v === false  || c === false){
-          return false
+        if (v === false || c === false) {
+          return false;
         }
-      }
+      };
       this.map.addLayer(vectorLayer);
     }
-    return {layer:this.layerList[id],id}
+    return { layer: this.layerList[id], id };
   }
-  destroyLayer(layer){
-    try{
-      if(typeof layer === 'number'){
+  destroyLayer(layer) {
+    try {
+      if (typeof layer === "number") {
         const la = this.map.getLayerById(layer);
-        la && this.map.removeLayer(la)
-      }else{
-        this.map.removeLayer(layer)
+        la && this.map.removeLayer(la);
+      } else {
+        this.map.removeLayer(layer);
       }
       layer.clear();
-      return true
-    }catch(e){
+      return true;
+    } catch (e) {
       console.error(e);
-      return false
+      return false;
     }
   }
-  getLayerById(id){
+  getLayerById(id) {
     return this.layerList[id] || null;
   }
-  getAllLayer(){
+  getAllLayer() {
     return Object.values(this.layerList);
   }
-  setVisible(id,visible){
-    const layer = this.getLayerById(id)
-    layer.setVisible(visible)
+  setVisible(id, visible) {
+    const layer = this.getLayerById(id);
+    layer.setVisible(visible);
   }
-  clearLayer(id){
-    const layer = this.getLayerById(id)
-    layer.clear()
+  clearLayer(id) {
+    const layer = this.getLayerById(id);
+    layer.clear();
   }
 
-
-  createClusterLayer(id,option,callback){
-    if(!this.layerList[id]){
-      const styleInfo = new Style(option.clusteOption)
+  createClusterLayer(id, option, callback) {
+    if (!this.layerList[id]) {
+      // const styleInfo = new Style(option.clusterStyleOptions)
       const vectorLayer = new ClusterVectorLayer({
         ...defaultClusterOption,
-        id,
         ...option,
-        style:styleInfo.styleFunction
+        // style:getClusterStyle
+        // style:styleInfo.styleFunction.bind(styleInfo)
+      });
+
+      const clusterStyleOptions = option.clusterStyleOptions
+        ? { ...option.clusterStyleOptions }
+        : {};
+      clusterStyleOptions.singleStyleFunction = (singleFeature) => {
+        const style =
+          (singleFeature.getProperties().data &&
+            singleFeature.getProperties().data.style) ||
+          null;
+        if (!style) {
+          const s = getPointStyle(option.singleStyle || {});
+          return s
+        }
+        return getPointStyle(style);
+      };
+      vectorLayer.setStyle((feature) => {
+        //使用聚合图层样式
+        return getClusterStyle(feature, clusterStyleOptions);
       });
       this.layerList[id] = vectorLayer;
-      this.layerList[id].eventOnClick = (e)=>{
+      this.layerList[id].eventOnClick = (e) => {
         let c;
-        if(callback){
-          c = callback(e,e.data,) 
+        if (callback) {
+          c = callback(e, e.data);
         }
-        if(c === false){
-          return false
+        if (c === false) {
+          return false;
         }
-      }
+      };
       this.map.addLayer(vectorLayer);
     }
-    return {layer:this.layerList[id],id}
+    return { layer: this.layerList[id], id };
   }
-
 }
 
-
-class Style{
-  constructor(clusterOption){
+class Style {
+  constructor(clusterOption) {
     this.clusterOption = clusterOption;
   }
   styleFunction(feature) {
@@ -123,34 +139,35 @@ class Style{
     }
   }
 
-
   getSingleStye(singleFeature) {
     // const hasIconPath = singleFeature.get("properties") && singleFeature.get("properties")["iconPath"];
-    const styleoption = singleFeature.getProperties().data.style;
-    style = new IconStyle(
+    const styleoption =
+      (singleFeature.getProperties().data &&
+        singleFeature.getProperties().data.style) ||
+      {};
+    const style = new IconStyle(
       styleoption
       // text:this.getText(name,{
       //   offsetY:-40
       // })
-    ); 
+    );
     // style.setGeometry(singleFeature.getGeometry());
     // 如果没有传iconPath 对默认的样式做一层缓存  如果有就用自己的
     return style;
   }
   getClusterBreakStyle(size) {
-
-    style = new IconStyle(
+    const style = new IconStyle(
       {
         ...this.clusterOption,
         text: {
           ...this.clusterOption.text,
-          text:size,
-        }
+          text: size,
+        },
       }
       // text:this.getText(name,{
       //   offsetY:-40
       // })
-    ); 
-    return style
+    );
+    return style;
   }
 }

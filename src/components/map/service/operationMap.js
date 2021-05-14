@@ -1,6 +1,8 @@
 import * as SMap from "@/assets/plugin/map.js";
 const { PointFeature, IconStyle , LineFeature ,PolygonFeature , LineStyle,PolygonStyle , CircleStyle} = SMap;
-import mapMark from "@/assets/images/map-marker.png";
+// import mapMark from "@/assets/images/map-marker.png";
+import mapMark from "@/assets/plugin/images/clear.png";
+
 
 const defaultPointStyle = {
   icon: {
@@ -20,22 +22,19 @@ const defaultPointStyle = {
     font:" 14px sans-serif"
   },
 };
-function getPointStyle(style = {}) {
+export function getMergeStyle(style={}){
   const {type }= style;
   const s = {
     icon:{
       ...defaultPointStyle.icon,
-
       ...style.icon,
     },
     text:{
       ...defaultPointStyle.text,
-
       ...style.text,
     },
     circle:{
       ...defaultPointStyle.circle,
-
       ...style.circle,
     }
   };
@@ -45,9 +44,21 @@ function getPointStyle(style = {}) {
   }else{
     delete s.circle
   }
-  return new IconStyle(s);
+  return s 
 }
-
+export function getPointStyle(style = {}) {
+  return new IconStyle(getMergeStyle(style));
+}
+export function showClusterPoints(vectorLayer, points){
+  const multiPointerFeature = points.map(item=>{
+    const coordinate = item.point || item;
+    const data = item.data || null;
+    return new PointFeature(
+      { coordinate , data },
+    )
+  });
+  vectorLayer.addFeatures(multiPointerFeature);
+}
 
 export function showPoints(vectorLayer, points, style) {
   let styleInfo = getPointStyle(style)

@@ -17,31 +17,31 @@ export class OpenInfoWindow {
      
   }
   initVueContent(content, data) {
-    let propsData = {
-      ...data,
-    };
-    propsData["layerid"] = this.id;
-    // propsData["lydata"] = this.options.content.data;
-    // propsData["lyoption"] = this.options;
-    const com =  Vue.extend(content)
-    let instance = new com({
-      // parent: this.componentParent,
-      propsData: propsData
+    if(!Array.isArray(data)){
+      data = [data]
+    }
+    return data.map(item=>{
+      let propsData = {
+        ...item,
+      };
+      propsData["layerid"] = this.id;
+      // propsData["lydata"] = this.options.content.data;
+      // propsData["lyoption"] = this.options;
+      const com =  Vue.extend(content)
+      let instance = new com({
+        // parent: this.componentParent,
+        propsData: propsData
+      })
+      instance.vm = instance.$mount();
+      this.vueComponent = instance;
+      return instance.vm.$el;
     })
-    instance.vm = instance.$mount();
-    this.vueComponent = instance;
-    return instance.vm.$el;
+    
   }
   setContent(contentTem, titleTem, data) {
     let content = contentTem || this.infoWindowContent;
     const title = titleTem;
-    if (this.isVue) {
-      content = this.initVueContent(contentTem, data);
-      this.infoWindow.setContainer({
-        content,
-        title,
-      });
-    } else {
+    if (!this.isVue) {
       this.infoWindow.setInfoTemple({
         content,
         title,
@@ -53,10 +53,13 @@ export class OpenInfoWindow {
     // this.infoWindow && this.infoWindow.close();
     if (this.isVue) {
       const content = this.initVueContent(this.infoWindowContent,data);
-      this.infoWindow.setContainerAndPosition(coordinate, { title, content });
+      this.infoWindow.setContainerAndPosition(coordinate, content.map((c,i)=>({ title:data[i] && (typeof data[i].title) !=="undefined"?data[i].title:title , content :c})));
     } else {
       this.infoWindow.setTitle(title);
-      this.infoWindow.setFeatures(coordinate, [{ ...data, title }]);
+      this.infoWindow.setFeatures(coordinate, data.map(item=>({
+        ...item,
+        title:typeof item.title !=="undefined"?item.title:title,
+      })));
     }
   }
   createInfoWindow(center) {
@@ -107,19 +110,23 @@ const indowWindowList = {};
  */
 
 export function showInfoWindow(id, option, map) {
-  let { event, coordinate, data, content, title ,onClose } = option;
+  let { event, coordinate, data, content, title="" ,onClose } = option;
+  if (!data) {
+    data = event.data.data && event.data.data.features?event.data.data.features.map(item=>item.getProperties().data):[event.data.data.data];
+  }
+  if(!Array.isArray(data)){
+    data = [data];
+  }
+  if (!coordinate) {
+    coordinate = event.feature.getGeometry().getCoordinates();
+  }
+
   if (!indowWindowList[id]) {
     indowWindowList[id] = new OpenInfoWindow(id, option, map);
   } else {
     indowWindowList[id].setContent(content, title, data);
   }
   onClose && (indowWindowList[id].onClose = onClose);
-  if (!data) {
-    data = event.data.data;
-  }
-  if (!coordinate) {
-    coordinate = event.feature.getGeometry().getCoordinates();
-  }
   if (typeof content === "object") {
     indowWindowList[id].isVue = true;
 

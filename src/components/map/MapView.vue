@@ -21,7 +21,12 @@
 <script>
 import { MapService } from "./service/map";
 import { LayerService } from "./service/layer";
-import { showPoints , showLines ,showPolygons} from "./service/operationMap";
+import {
+	showPoints,
+	showLines,
+	showPolygons,
+	showClusterPoints,
+} from "./service/operationMap";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
 import { showInfoWindow } from "./service/infoWindow";
@@ -31,13 +36,13 @@ export default {
 		SelectBox,
 		LayerManage,
 	},
-	props:{
-		layerList:{
-			type:Array,
-			default:[]
+	props: {
+		layerList: {
+			type: Array,
+			default: [],
 		},
-		showLayerControl:{type:Boolean,default:true},
-		showSelectControl:{type:Boolean,default:true}
+		showLayerControl: { type: Boolean, default: true },
+		showSelectControl: { type: Boolean, default: true },
 	},
 	data() {
 		return {
@@ -65,88 +70,69 @@ export default {
 				control: true,
 			});
 
-			this.map.on("click",(evt)=>{
-      let selectLayer = []; 
-      this.map.forEachLayerAtPixel(evt.pixel, (layer) => {
-        if (layer) {
-            selectLayer.push(layer) ;
-          }
-      }, {
-          // layerFilter: (layer) => {
-					
-          // }
-			});
-			const featureLayer = [];
-			if(!selectLayer.length)return 
-			selectLayer.forEach(layer=>{
-				 this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-                if (feature) {
-                   featureLayer.push({layer,feature});
-                }
-            }, {
-                layerFilter: function (lay) {
-                  return lay === layer;
-                }
-            });
-			})
-			for(let i = 0;i<featureLayer.length;i++){
-				if(featureLayer[i].layer.eventOnClick){
-					const v = featureLayer[i].layer.eventOnClick({
-						data:{data:featureLayer[i].feature.values_},
-						originalEvent:evt.originalEvent,
-						feature:featureLayer[i].feature
-					})
-					if(v === false)return;
+			this.map.on("click", (evt) => {
+				let selectLayer = [];
+				this.map.forEachLayerAtPixel(
+					evt.pixel,
+					(layer) => {
+						if (layer) {
+							selectLayer.push(layer);
+						}
+					},
+					{
+						// layerFilter: (layer) => {
+						// }
+					}
+				);
+				const featureLayer = [];
+				if (!selectLayer.length) return;
+				selectLayer.forEach((layer) => {
+					this.map.forEachFeatureAtPixel(
+						evt.pixel,
+						function (feature, layer) {
+							if (feature) {
+								featureLayer.push({ layer, feature });
+							}
+						},
+						{
+							layerFilter: function (lay) {
+								return lay === layer;
+							},
+						}
+					);
+				});
+				for (let i = 0; i < featureLayer.length; i++) {
+					if (featureLayer[i].layer.eventOnClick) {
+						// const data = featureLayer[i].feature.values_.features?[featureLayer[i].feature.values_]|featureLayer[i].feature.values_.features
+						const v = featureLayer[i].layer.eventOnClick({
+							data: { data: featureLayer[i].feature.values_ },
+							originalEvent: evt.originalEvent,
+							feature: featureLayer[i].feature,
+						});
+						if (v === false) return;
+					}
 				}
-			}
-      // if (selectLayer) {
-      //   if (selectLayer instanceof OlVectorLayer || selectLayer instanceof OlVectorTileLayer) {
-      //       var selectFeature_1;
-      //       this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-      //           if (feature) {
-      //               selectFeature_1 = feature;
-      //               return true;
-      //           }
-      //       }, {
-      //           layerFilter: function (layer) {
-      //               return layer === selectLayer;
-      //           }
-      //       });
-      //       if (selectFeature_1) {
-      //           var data = void 0;
-      //           if (selectLayer instanceof ClusterVectorLayer) {
-      //               data = selectFeature_1.get('features').map(function (item) { return item.getProperties(); });
-      //           }
-      //           else {
-      //               data = selectFeature_1.getProperties();
-      //           }
-      //           this.showInfoWinodow({
-      //             type: evt.type,
-      //             feature: selectFeature_1,
-      //             data: data,
-      //             originEvent: evt
-      //         });
-      //       }
-      //   }
-      // }
-
-    });
+			});
 			this.layerInfo = new LayerService(this.map);
-			this.$emit("map-init",this);
+			this.$emit("map-init", this);
 			// this.showPoints([[113.137599, 23.031483]]);
 		},
 		onslect(evt) {
 			this.$emit("select-layer", evt);
 		},
 		// 展示多组不同样式的点
-		showMoerStylePoints(points, layerId){
-			if(!layerId){
-				throw "请传入图层id,调用createLayer方法获取图层id"
+		showMoerStylePoints(points, layerId) {
+			if (!layerId) {
+				throw "请传入图层id,调用createLayer方法获取图层id";
 			}
-			points.forEach(item=>{
-				const {points,style}=item;
-				this.showOneStylePoints(points,style,layerId);
-			})
+			points.forEach((item) => {
+				const { points, style } = item;
+				this.showOneStylePoints(points, style, layerId);
+			});
+		},
+		showClusterPoints(points, layerId) {
+			const layer = this.layerInfo.getLayerById(layerId);
+			showClusterPoints(layer, points);
 		},
 		// 展示一组
 		showOneStylePoints(points, style, layerId) {
@@ -164,14 +150,14 @@ export default {
 			showPoints(layer, points, style);
 			return layerId;
 		},
-		showMoerStyleLines(points, layerId){
-			if(!layerId){
-				throw "请传入图层id,调用createLayer方法获取图层id"
+		showMoerStyleLines(points, layerId) {
+			if (!layerId) {
+				throw "请传入图层id,调用createLayer方法获取图层id";
 			}
-			points.forEach(item=>{
-				const {lines,style}=item;
-				this.showOneStyleLines(lines,style,layerId);
-			})
+			points.forEach((item) => {
+				const { lines, style } = item;
+				this.showOneStyleLines(lines, style, layerId);
+			});
 		},
 		// 展示一组
 		showOneStyleLines(lines, style, layerId) {
@@ -189,14 +175,14 @@ export default {
 			showLines(layer, lines, style);
 			return layerId;
 		},
-		showMoerStylePolygon(polygons, layerId){
-			if(!layerId){
-				throw "请传入图层id,调用createLayer方法获取图层id"
+		showMoerStylePolygon(polygons, layerId) {
+			if (!layerId) {
+				throw "请传入图层id,调用createLayer方法获取图层id";
 			}
-			polygons.forEach(item=>{
-				const {polygons,style}=item;
-				this.showOneStylePolygon(polygons,style,layerId);
-			})
+			polygons.forEach((item) => {
+				const { polygons, style } = item;
+				this.showOneStylePolygon(polygons, style, layerId);
+			});
 		},
 		// 展示一组
 		showOneStylePolygon(polygons, style, layerId) {
@@ -214,32 +200,32 @@ export default {
 			showPolygons(layer, polygons, style);
 			return layerId;
 		},
-		showInfoWindow(id,option){
-			showInfoWindow(id,option,this.map);
+		showInfoWindow(id, option) {
+			showInfoWindow(id, option, this.map);
 		},
-		createLayer(id,callback){
-			const layer=  this.layerInfo.createLayer(id,callback);
+		createLayer(id, callback) {
+			const layer = this.layerInfo.createLayer(id, callback);
 			return layer.id;
 		},
-		createClusterLayer(id,option,callback){
-			const layer=  this.layerInfo.createClusterLayer(id,option,callback);
+		createClusterLayer(id, option, callback) {
+			const layer = this.layerInfo.createClusterLayer(id, option, callback);
 			return layer.id;
 		},
-		removeLayer(id){
-			if(id && this.layerInfo.layerList[id]){
+		removeLayer(id) {
+			if (id && this.layerInfo.layerList[id]) {
 				this.layerInfo.destroyLayer(id);
 			}
 		},
-		clearLayer(id){
-			if(id && this.layerInfo.layerList[id]){
+		clearLayer(id) {
+			if (id && this.layerInfo.layerList[id]) {
 				this.layerInfo.clearLayer(id);
 			}
 		},
-		setVisible(id,visible){
-			if(id && this.layerInfo.layerList[id]){
-				this.layerInfo.setVisible(id,visible);
+		setVisible(id, visible) {
+			if (id && this.layerInfo.layerList[id]) {
+				this.layerInfo.setVisible(id, visible);
 			}
-		}
+		},
 	},
 };
 </script>
