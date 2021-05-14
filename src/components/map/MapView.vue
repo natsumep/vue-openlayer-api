@@ -59,7 +59,10 @@ export default {
 	},
 	computed: {
 		mapLayerList() {
-			return this.layerInfo && this.layerInfo.getAllLayer();
+			const list = this.layerInfo && this.layerInfo.getAllLayer();
+			return list.filter(item=>{
+				return !(item instanceof Heatmap)
+			})
 		},
 	},
 	methods: {
