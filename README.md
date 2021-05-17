@@ -74,10 +74,10 @@ Vue.component('MapView', MapView)；
 
 | 方法名                 | 说明                                                                                             | 参数                                                                                                                                                                               | 返回            | 调用                                                  |
 | ---------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------------------------------- |
-| createLayer            | 创建一个图层，该图层用于承载地图数据（点线面）                                                   | 图层 id 可以不传，默认会生成一个图层 id（uuid）建议根据业务自己生成一个，重复创建同一个 id 图层 会返回第一次创建的图层。 图层点击事件，如果点击了该图层中的点线面元素 会触发该事件 | 返回一个图层 id | (layerid?: string,clickCallback?: function)=> layerid |
-| removeLayer(id)        | 从地图移除一个图层，移除的图层会自动清理上面的所有数据；如果移除了，需要再次调用创建图层的方法， | 需要移除的图层 id；必传                                                                                                                                                            | viod            | (layerid: string)=> void                              |
-| clearLayer(id)         | 清理当前图层上的所有数据                                                                         | 需要移除的图层 id；必传                                                                                                                                                            | void            | (layerid: string)=> void                              |
-| setVisible(id,visible) | 显示或者隐藏当前的图层                                                                           | 需要显示或者隐藏的图层 id , 是否显示                                                                                                                                               | void            | (layerid: string,visible:boolean)=> void              |
+| createLayer            | 创建一个图层，该图层用于承载地图数据（点线面）                                                   | 图层 id 可以不传，默认会生成一个图层 id（uuid）建议根据业务自己生成一个，重复创建同一个 id 图层 会返回第一次创建的图层。 图层点击事件，如果点击了该图层中的点线面元素 会触发该事件 | 返回一个图层 id | (layerid?: string,clickCallback?: function,layerOptions:object)=> layer |
+| removeLayer(layer)        | 从地图移除一个图层，移除的图层会自动清理上面的所有数据；如果移除了，需要再次调用创建图层的方法， | 需要移除的图层；必传                                                                                                                                                            | viod            | (layer: )=> void                              |
+| clearLayer(id)         | 清理当前图层上的所有数据                                                                         | 需要移除的图层；必传                                                                                                                                                            | void            | (layer)=> void                              |
+| setVisible(id,visible) | 显示或者隐藏当前的图层                                                                           | 需要显示或者隐藏的图层 , 是否显示                                                                                                                                               | void            | (layerid: string,visible:boolean)=> void              |
 
 > 特殊说明: 图层的点击事件 会返回当前点击的元素的坐标信息和传入的 data 数据~ 如果给渲染的元素绑定了事件，两个都会触发
 
@@ -92,6 +92,25 @@ Vue.component('MapView', MapView)；
 | e.data.data | any | 和下方的 data 是同一个对象 |
 | data | any | 点击的要素 渲染时传入的 data 数据，没有为 null |
 
+#### layerOptions 创建图层配置参数
+
+| 参数              | 类型          | 说明                    |
+| ----------------- | ------------- | -------------------------------- |
+|opacity|	number|	设置透明度，默认1|
+|visible|	boolean|	图层可见性，默认true|
+|zIndex|	number|	设置图层层级|
+|style|	StyleLike	|图层样式，该样式将应用在图层上的特征图形上 具体配置参考下方，如果给单个要素配置了样式 该样式无效|
+
+#### layer 图层方法说明
+> 创建图层会返回一个图层， 该图层上存在一些方法可以直接调用。
+
+| 名称              | 类型          | 说明                    |
+| ----------------- | ------------- | -------------------------------- |
+|setOpacity|	(opacity: number)=> void|	设置图层透明度|
+|setStyle|(style: StyleLike )=> void|	设置图层样式|
+|setVisible	|(visible: boolean)=> void	|设置图层可见性|
+|setZIndex	|(zIndex: number)=> void	|设置图层层级|
+|clear|()=> void	| 清除图层的所有feature| 
 ```js
 // 创建图层
 export default {

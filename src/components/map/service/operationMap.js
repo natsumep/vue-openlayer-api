@@ -11,7 +11,9 @@ const {
   CircleStyle,
   getPolyginLayerSelece,
   Circle,
-  transform
+  transform,
+  Marker,
+  Label
 } = SMap;
 // import mapMark from "@/assets/images/map-marker.png";
 import mapMark from "@/assets/plugin/images/clear.png";
@@ -137,4 +139,21 @@ export function getSelectByPolygon(layers, data) {
   });
   const polygon = polygin.getGeometry();
   return {...getPolyginLayerSelece(polygon, layers),extent:polygon.getExtent(),geometry:polygon};
+}
+
+
+function showMarkerPoint(map,point,option){
+  const mark = new Marker({...option,position:point});
+  map.addOverlay(mark);
+  return mark;
+}
+
+export function showMarker(map,point,option,textOption){
+  return showMarkerPoint(map,point,option);
+}
+
+export function removeMarker(map,marks){
+  marks.forEach(item=>{
+    this.map.removeMarker(item);
+  })
 }

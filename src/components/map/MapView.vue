@@ -28,7 +28,9 @@ import {
 	showClusterPoints,
 	showHeatMapPoints,
 	getSelectByPoint,
-getSelectByPolygon
+	getSelectByPolygon,
+	showMarker,
+	removeMarker
 } from "./service/operationMap";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
@@ -133,124 +135,101 @@ export default {
 			this.$emit("select-layer", evt);
 		},
 		// 展示多组不同样式的点
-		showMoerStylePoints(points, layerId) {
-			if (!layerId) {
-				throw "请传入图层id,调用createLayer方法获取图层id";
+		showMoerStylePoints(points, layer) {
+			if (!layer) {
+				throw "请传入图层,调用createLayer方法获取图层";
 			}
 			points.forEach((item) => {
 				const { points, style } = item;
-				this.showOneStylePoints(points, style, layerId);
+				this.showOneStylePoints(points, style, layer);
 			});
 		},
-		showClusterPoints(points, layerId) {
-			const layer = this.layerInfo.getLayerById(layerId);
+		showClusterPoints(points, layer) {
 			showClusterPoints(layer, points);
 		},
 		// 展示一组
-		showOneStylePoints(points, style, layerId) {
-			let layer = null;
-			if (layerId) {
-				layer = this.layerInfo.getLayerById(layerId);
-				if (!layer) {
-					throw "传入的图层id不存在";
-				}
-			} else {
+		showOneStylePoints(points, style, layer) {
+			if (!layer)  {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
-				layerId = layerinfo.id;
 			}
 			showPoints(layer, points, style);
-			return layerId;
+			return layer;
 		},
-		showMoerStyleLines(points, layerId) {
-			if (!layerId) {
-				throw "请传入图层id,调用createLayer方法获取图层id";
+		showMoerStyleLines(points, layer) {
+			if (!layer) {
+				throw "请传入图层,调用createLayer方法获取图层";
 			}
 			points.forEach((item) => {
 				const { lines, style } = item;
-				this.showOneStyleLines(lines, style, layerId);
+				this.showOneStyleLines(lines, style, layer);
 			});
 		},
 		// 展示一组
-		showOneStyleLines(lines, style, layerId) {
-			let layer = null;
-			if (layerId) {
-				layer = this.layerInfo.getLayerById(layerId);
-				if (!layer) {
-					throw "传入的图层id不存在";
-				}
-			} else {
+		showOneStyleLines(lines, style, layer) {
+			if (!layer) {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
-				layerId = layerinfo.id;
 			}
 			showLines(layer, lines, style);
-			return layerId;
+			return layer;
 		},
-		showMoerStylePolygon(polygons, layerId) {
-			if (!layerId) {
-				throw "请传入图层id,调用createLayer方法获取图层id";
+		showMoerStylePolygon(polygons, layer) {
+			if (!layer) {
+				throw "请传入图层,调用createLayer方法获取图层";
 			}
 			polygons.forEach((item) => {
 				const { polygons, style } = item;
-				this.showOneStylePolygon(polygons, style, layerId);
+				this.showOneStylePolygon(polygons, style, layer);
 			});
 		},
 		// 展示一组
-		showOneStylePolygon(polygons, style, layerId) {
-			let layer = null;
-			if (layerId) {
-				layer = this.layerInfo.getLayerById(layerId);
-				if (!layer) {
-					throw "传入的图层id不存在";
-				}
-			} else {
+		showOneStylePolygon(polygons, style, layer) {
+			if (layer) {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
-				layerId = layerinfo.id;
 			}
 			showPolygons(layer, polygons, style);
-			return layerId;
+			return layer;
 		},
 		showInfoWindow(id, option) {
 			showInfoWindow(id, option, this.map);
 		},
-		createLayer(id, callback) {
-			const layer = this.layerInfo.createLayer(id, callback);
-			return layer.id;
+		createLayer(id, callback,options) {
+			const layer = this.layerInfo.createLayer(id, callback,options);
+			return layer.layer;
 		},
 		createClusterLayer(id, option, callback) {
 			const layer = this.layerInfo.createClusterLayer(id, option, callback);
-			return layer.id;
+			return layer.layer;
 		},
 		createHeatMapLayer(id,option){
 			const layer = this.layerInfo.createHeatmap(id, option);
-			return layer.id;
+			return layer.layer;
 		},
-		showHeatMapPoints(layerId,points){
-			const layer = this.layerInfo.getLayerById(layerId);
+		showHeatMapPoints(layer,points){
 			showHeatMapPoints(layer, points);
 		},
-		removeLayer(id) {
-			if (id && this.layerInfo.layerList[id]) {
-				this.layerInfo.destroyLayer(id);
-			}
+		removeLayer(layer) {
+				this.layerInfo.destroyLayer(layer);
 		},
-		clearLayer(id) {
-			if (id && this.layerInfo.layerList[id]) {
-				this.layerInfo.clearLayer(id);
-			}
+		clearLayer(layer) {
+			layer && this.layerInfo.clearLayer(layer);
 		},
-		setVisible(id, visible) {
-			if (id && this.layerInfo.layerList[id]) {
-				this.layerInfo.setVisible(id, visible);
-			}
+		setVisible(layer, visible) {
+				this.layerInfo.setVisible(layer, visible);
 		},
 		getSelectByPoint(point,width){
 			return getSelectByPoint(this.mapLayerList,point,width);
 		},
 		getSelectByPolygon(data){
 			return getSelectByPolygon(this.mapLayerList,data);
+		},
+		showMarker(point,option,textOption){
+			return showMarker(this.map,point,option,textOption)
+		},
+		removeMarker(markers){
+			removeMarker(this.map,markers)
 		}
 
 	},

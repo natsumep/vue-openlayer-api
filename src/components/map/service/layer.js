@@ -21,10 +21,11 @@ export class LayerService {
   constructor(map) {
     this.map = map;
   }
-  createLayer(id = getUUID(), callback) {
+  createLayer(id = getUUID(), callback , options) {
     if (!this.layerList[id]) {
       const vectorLayer = new VectorLayer({
         id,
+        ...options,
       });
       this.layerList[id] = vectorLayer;
       // this.layerList[id].eventManager.addEvent("click",(e)=>{
@@ -69,12 +70,10 @@ export class LayerService {
   getAllLayer() {
     return Object.values(this.layerList);
   }
-  setVisible(id, visible) {
-    const layer = this.getLayerById(id);
+  setVisible(layer, visible) {
     layer.setVisible(visible);
   }
-  clearLayer(id) {
-    const layer = this.getLayerById(id);
+  clearLayer(layer) {
     layer.clear();
   }
 
