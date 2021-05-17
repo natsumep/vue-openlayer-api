@@ -27,13 +27,15 @@ import {
 	showPolygons,
 	showClusterPoints,
 	showHeatMapPoints,
+	getSelectByPoint,
+getSelectByPolygon
 } from "./service/operationMap";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
 import { showInfoWindow } from "./service/infoWindow";
 import * as SMap from "@/assets/plugin/map.js";
 const {
-  Heatmap,
+	Heatmap,
 } = SMap;
 export default {
 	components: {
@@ -244,6 +246,13 @@ export default {
 				this.layerInfo.setVisible(id, visible);
 			}
 		},
+		getSelectByPoint(point,width){
+			return getSelectByPoint(this.mapLayerList,point,width);
+		},
+		getSelectByPolygon(data){
+			return getSelectByPolygon(this.mapLayerList,data);
+		}
+
 	},
 };
 </script>
