@@ -228,8 +228,8 @@ export default {
 		showMarker(point,option,textOption){
 			return showMarker(this.map,point,option,textOption)
 		},
-		removeMarker(markers){
-			removeMarker(this.map,markers)
+		removeMarker(marker){
+			removeMarker(this.map,marker)
 		}
 
 	},

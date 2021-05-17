@@ -72,12 +72,12 @@ Vue.component('MapView', MapView)；
 > 点线面数据都是渲染在图层上的，一个图层可以渲染多个点线面数据, 目前仅支持清除当前图层上的所有数据，可以根据具体的业务规则，新增多个图层，以便清理数据
 > 特殊说明：关于点击事件， 如果存在多个图层叠加 会触发所有点击的事件 如果只想显示最上面的一个 需要在点击事件中返回 false ！必须是 false
 
-| 方法名                 | 说明                                                                                             | 参数                                                                                                                                                                               | 返回            | 调用                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------------------------------- |
+| 方法名                 | 说明                                                                                             | 参数                                                                                                                                                                               | 返回            | 调用                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------- |
 | createLayer            | 创建一个图层，该图层用于承载地图数据（点线面）                                                   | 图层 id 可以不传，默认会生成一个图层 id（uuid）建议根据业务自己生成一个，重复创建同一个 id 图层 会返回第一次创建的图层。 图层点击事件，如果点击了该图层中的点线面元素 会触发该事件 | 返回一个图层 id | (layerid?: string,clickCallback?: function,layerOptions:object)=> layer |
-| removeLayer(layer)        | 从地图移除一个图层，移除的图层会自动清理上面的所有数据；如果移除了，需要再次调用创建图层的方法， | 需要移除的图层；必传                                                                                                                                                            | viod            | (layer: )=> void                              |
-| clearLayer(id)         | 清理当前图层上的所有数据                                                                         | 需要移除的图层；必传                                                                                                                                                            | void            | (layer)=> void                              |
-| setVisible(id,visible) | 显示或者隐藏当前的图层                                                                           | 需要显示或者隐藏的图层 , 是否显示                                                                                                                                               | void            | (layerid: string,visible:boolean)=> void              |
+| removeLayer(layer)     | 从地图移除一个图层，移除的图层会自动清理上面的所有数据；如果移除了，需要再次调用创建图层的方法， | 需要移除的图层；必传                                                                                                                                                               | viod            | (layer: )=> void                                                        |
+| clearLayer(id)         | 清理当前图层上的所有数据                                                                         | 需要移除的图层；必传                                                                                                                                                               | void            | (layer)=> void                                                          |
+| setVisible(id,visible) | 显示或者隐藏当前的图层                                                                           | 需要显示或者隐藏的图层 , 是否显示                                                                                                                                                  | void            | (layerid: string,visible:boolean)=> void                                |
 
 > 特殊说明: 图层的点击事件 会返回当前点击的元素的坐标信息和传入的 data 数据~ 如果给渲染的元素绑定了事件，两个都会触发
 
@@ -94,23 +94,25 @@ Vue.component('MapView', MapView)；
 
 #### layerOptions 创建图层配置参数
 
-| 参数              | 类型          | 说明                    |
-| ----------------- | ------------- | -------------------------------- |
-|opacity|	number|	设置透明度，默认1|
-|visible|	boolean|	图层可见性，默认true|
-|zIndex|	number|	设置图层层级|
-|style|	StyleLike	|图层样式，该样式将应用在图层上的特征图形上 具体配置参考下方，如果给单个要素配置了样式 该样式无效|
+| 参数    | 类型      | 说明                                                                                             |
+| ------- | --------- | ------------------------------------------------------------------------------------------------ |
+| opacity | number    | 设置透明度，默认 1                                                                               |
+| visible | boolean   | 图层可见性，默认 true                                                                            |
+| zIndex  | number    | 设置图层层级                                                                                     |
+| style   | StyleLike | 图层样式，该样式将应用在图层上的特征图形上 具体配置参考下方，如果给单个要素配置了样式 该样式无效 |
 
 #### layer 图层方法说明
+
 > 创建图层会返回一个图层， 该图层上存在一些方法可以直接调用。
 
-| 名称              | 类型          | 说明                    |
-| ----------------- | ------------- | -------------------------------- |
-|setOpacity|	(opacity: number)=> void|	设置图层透明度|
-|setStyle|(style: StyleLike )=> void|	设置图层样式|
-|setVisible	|(visible: boolean)=> void	|设置图层可见性|
-|setZIndex	|(zIndex: number)=> void	|设置图层层级|
-|clear|()=> void	| 清除图层的所有feature| 
+| 名称       | 类型                       | 说明                   |
+| ---------- | -------------------------- | ---------------------- |
+| setOpacity | (opacity: number)=> void   | 设置图层透明度         |
+| setStyle   | (style: StyleLike )=> void | 设置图层样式           |
+| setVisible | (visible: boolean)=> void  | 设置图层可见性         |
+| setZIndex  | (zIndex: number)=> void    | 设置图层层级           |
+| clear      | ()=> void                  | 清除图层的所有 feature |
+
 ```js
 // 创建图层
 export default {
@@ -471,10 +473,10 @@ let data = { name: "test" };
 | data | any | 点击的要素 渲染时传入的 data 数据，没有为 null |
 
 #### showClusterPoints 往聚合图层中添加点
-| 方法              | 调用          | 说明                                                                                |
-| ----------------- | ------------- | ----------------------------------------------------------------------------------- |
-| showClusterPoints | (layerid: string , pints:coordinates[])=>void| 通过 map 对象调用showClusterPoints 方法，传入聚合图层id 和 点数组| 
 
+| 方法              | 调用                                          | 说明                                                                |
+| ----------------- | --------------------------------------------- | ------------------------------------------------------------------- |
+| showClusterPoints | (layerid: string , pints:coordinates[])=>void | 通过 map 对象调用 showClusterPoints 方法，传入聚合图层 id 和 点数组 |
 
 ### 热力图
 
@@ -489,15 +491,41 @@ let data = { name: "test" };
 
 #### heatMapOption 热力图 图层配置说明
 
-
-| 参数   | 类型             | 说明                             |
-| ------ | ---------------- | -------------------------------- |
-| radius | number    | 半径大小（以像素为单位） 默认为 8                     |
-| blur   | number      | 模糊大小（以像素为单位）默认为 15                     |
-| gradient   | 	string[] | 热图的颜色渐变，指定为CSS颜色字符串数组 默认为 ['#00f', '#0ff', '#0f0', '#ff0', '#f00']  |
+| 参数     | 类型     | 说明                                                                                      |
+| -------- | -------- | ----------------------------------------------------------------------------------------- |
+| radius   | number   | 半径大小（以像素为单位） 默认为 8                                                         |
+| blur     | number   | 模糊大小（以像素为单位）默认为 15                                                         |
+| gradient | string[] | 热图的颜色渐变，指定为 CSS 颜色字符串数组 默认为 ['#00f', '#0ff', '#0f0', '#ff0', '#f00'] |
 
 ### 往热力图添加点 showHeatMapPoints
 
-| 方法              | 调用          | 说明                                                                                |
-| ----------------- | ------------- | ----------------------------------------------------------------------------------- |
-| showHeatMapPoints | (layerid: string , pints:coordinates[])=>void| 通过 map 对象调用showHeatMapPoints 方法，传入热力图层id 和 点数组| 
+| 方法              | 调用                                          | 说明                                                                |
+| ----------------- | --------------------------------------------- | ------------------------------------------------------------------- |
+| showHeatMapPoints | (layerid: string , pints:coordinates[])=>void | 通过 map 对象调用 showHeatMapPoints 方法，传入热力图层 id 和 点数组 |
+
+#### marker 地图渲染一个 dom
+
+> marker 向地图添加一个 img 元素或者 dom 结构的覆盖物，该元素可以随着地图移动，并可以配置拖拽和可点击等功能。
+
+| 方法       | 调用                                                        | 说明                                                                                   |
+| ---------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| showMarker | (point: Coordinate , MarkerOptions: MarkerOptions)=> marker | 通过 map 对象调用 showMarker 方法，传入坐标点和 marker 配置，渲染一个 dom 结构在地图上，返回一个marker |
+|removeMarker| (marker)=>void| 通过 map 对象调用 removeMarker 方法，传入marker，移除地图上的传入的marker|
+##### MarkerOptions 配置相关说明
+> 支持传入一个dom对象 或者 一个 url和text 配置，  如果传入了 dom 会忽略 url 和 text；
+> 
+
+|element| HTMLElement| 一个dom对象 ， 如果存在dom对象，会忽略 url 和 text|
+|url |string| 自定义 img 路径|
+|text| string| 自定义文字说明 出现在图片下面,不传不会渲染文字 |
+|textCss| object| 传入一个样式对象,该样式会出现在该文字的dom节点上 例如：{color:"red"}| 
+|data| any |marker 附带数据，开启点击事件时会将该数据传递给点击事件回调|
+|dragable| boolean |是否允许拖拽，默认 false|
+|dragStart |(data: any, coordinate: Coordinate) => void |拖拽开始事件回调|
+|dragEnd| (data: any, coordinate: Coordinate) => void |拖拽结束事件回调|
+|clickable |boolean |是否允许点击|
+|click |(data: any, coordinate: Coordinate) => void |点击事件回调|
+|positioning |OverlayPositioning |定义覆盖物如何相对于它的位置布局，默认 top-left|
+|offset| Array<number> |设置 overlay 相对于 position 的偏移，默认[0,0]，第一个元素代表水平偏移，第二个元素代表垂直偏移|
+|stopEvent |boolean |是否阻止覆盖物事件传播到地图，默认 true|
+|className| string| 在当前marker的外围添加一个class，方便控制样式|

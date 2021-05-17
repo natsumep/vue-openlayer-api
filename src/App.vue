@@ -130,7 +130,6 @@ export default {
 			this.getSelectByPoint();
 			this.getSelectByPolygon();
 			this.showMarker()
-			debugger;
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -433,7 +432,7 @@ export default {
 			})
 			console.log(marker);
 			setTimeout(()=>{
-				marker.clear();
+				this._map.removeMarker(marker);
 			},5000)
 		}
 

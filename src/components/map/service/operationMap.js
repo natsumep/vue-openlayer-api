@@ -152,8 +152,6 @@ export function showMarker(map,point,option,textOption){
   return showMarkerPoint(map,point,option);
 }
 
-export function removeMarker(map,marks){
-  marks.forEach(item=>{
-    this.map.removeMarker(item);
-  })
+export function removeMarker(map,mark){
+    map.removeOverlay(mark);
 }
