@@ -133,6 +133,7 @@ export default {
 			this.showMarker()
 			// this.showPolygon();
 			this.showMultiPolygon();
+			this.showCircle();
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -470,6 +471,23 @@ export default {
 				setTimeout(()=>{
 				layer.clear();
 			},10000)
+		},
+		// 加载一个圆
+		showCircle(){
+				const layer = this.createLayer("showCircle", "showCircle");;
+				this._map.showCircle({
+					radius:3000,
+					point:[113.185599, 23.131483 ]
+				},{
+            stroke: {color: 'red', width: 2},
+						fill: {color: 'rgba(0,128,0, .5)'},
+						text:{
+							text:"我是一个圆"
+						}
+				},layer)
+				setTimeout(()=>{
+					layer.clear();
+				},10000)
 		}
 	},
 };

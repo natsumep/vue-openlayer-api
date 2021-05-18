@@ -31,7 +31,8 @@ import {
 	getSelectByPolygon,
 	showMultiPolygons,
 	showMarker,
-	removeMarker
+	removeMarker,
+	showCircle
 } from "./service/operationMap";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
@@ -208,6 +209,14 @@ export default {
 				layer = layerinfo.layer;
 			}
 			showMultiPolygons(layer, polygons, style);
+			return layer;
+		},
+		showCircle(option, style, layer){
+			if (!layer) {
+				const layerinfo = this.layerInfo.createLayer();
+				layer = layerinfo.layer;
+			}
+			showCircle(layer, option, style);
 			return layer;
 		},
 		showInfoWindow(id, option) {

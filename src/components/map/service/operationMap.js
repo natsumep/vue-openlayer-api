@@ -155,10 +155,10 @@ export function showMultiPolygons(vectorLayer, polygons, style) {
 }
 export function showClusterPoint() {}
 
-export function getSelectByPoint(layers, point, width) {
+export function getSelectByPoint(layers, point, radius) {
   var circleIn3857 = new Circle(
     transform(point, "EPSG:4326", "EPSG:3857"),
-    width
+    radius
   );
   var circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
   const ev = getPolyginLayerSelece(circleIn4326, layers);
@@ -205,10 +205,10 @@ export function removeMarker(map, mark) {
 
 export class CircleFeature extends Feature {
   constructor(opts, style) {
-    const {point,width } = opts;
+    const {point,radius } = opts;
     const circleIn3857 = new Circle(
       transform(point, "EPSG:4326", "EPSG:3857"),
-      width
+      radius
     );
     const circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
     const geometry = circleIn4326;
@@ -219,6 +219,8 @@ export class CircleFeature extends Feature {
   }
 };
 
-export function showCircle(){
-
+export function showCircle(vectorLayer,circleOption , style){
+  const styleInfo = getPolygonStyle(style);
+  const feature = new CircleFeature(circleOption, styleInfo);
+  vectorLayer.addFeature(feature);
 }
