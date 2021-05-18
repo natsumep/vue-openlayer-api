@@ -13,7 +13,8 @@ const {
   Circle,
   transform,
   Marker,
-  Label
+  Label,
+  Feature,
 } = SMap;
 // import mapMark from "@/assets/images/map-marker.png";
 import mapMark from "@/assets/plugin/images/clear.png";
@@ -74,7 +75,8 @@ export function showClusterPoints(vectorLayer, points) {
 
 export function showPoints(vectorLayer, points, style) {
   let styleInfo = getPointStyle(style);
-  const multiPointerFeature = points.map((item) => {
+  const multiPointerFeature =[]
+   points.forEach((item) => {
     const coordinate = item.point || item;
     const data = item.data || null;
     const showPointText = item.data && item.data.showPointText;
@@ -88,7 +90,16 @@ export function showPoints(vectorLayer, points, style) {
       };
       styleInfo = getPointStyle(st);
     }
-    return new PointFeature({ coordinate, data }, styleInfo);
+    if(style.imageText){
+      const st = {
+        text: style.imageText,
+      };
+      const sty =  new CircleStyle(st);
+      multiPointerFeature.push( new PointFeature({ coordinate, data:{
+        __point_lable__:true,
+      } }, sty));
+    }
+    multiPointerFeature.push( new PointFeature({ coordinate, data }, styleInfo));
   });
   vectorLayer.addFeatures(multiPointerFeature);
 }
@@ -107,15 +118,23 @@ export function showLines(vectorLayer, lines, style) {
 }
 
 function getPolygonStyle(s) {
+  const de = {
+    stroke: { color: "blue", width: 2 },
+    fill: { color: "rgba(0,0,0, .2)" },
+  };
+  s = {
+    ...de,
+    ...s,
+  };
   return s ? new PolygonStyle(s) : undefined;
 }
 
 export function showPolygons(vectorLayer, polygons, style) {
   const styleInfo = getPolygonStyle(style);
   const multiLineFeature = polygons.map((item) => {
-    const coordinate = item.polygon || item;
+    const coordinates = item.polygon || item;
     const data = item.data || null;
-    return new PolygonFeature({ coordinate, data }, styleInfo);
+    return new PolygonFeature({ coordinates, data }, styleInfo);
   });
   vectorLayer.addFeatures(multiLineFeature);
 }
@@ -125,33 +144,81 @@ export function showHeatMapPoints(vectorLayer, points) {
     .getSource()
     .addFeatures(points.map((item) => new PointFeature({ coordinate: item })));
 }
-
+export function showMultiPolygons(vectorLayer, polygons, style) {
+  const styleInfo = getPolygonStyle(style);
+  const multiLineFeature = polygons.map((item) => {
+    const coordinates = item.polygon || item;
+    const data = item.data || null;
+    return new MultiPolygonFeature({ coordinates, data }, styleInfo);
+  });
+  vectorLayer.addFeatures(multiLineFeature);
+}
 export function showClusterPoint() {}
 
 export function getSelectByPoint(layers, point, width) {
-  var circleIn3857 = new Circle(transform(point, 'EPSG:4326', 'EPSG:3857'), width);
-  var circleIn4326 = circleIn3857.transform('EPSG:3857','EPSG:4326');
-  return {...getPolyginLayerSelece(circleIn4326, layers),extent:circleIn4326.getExtent(),geometry:circleIn4326};
+  var circleIn3857 = new Circle(
+    transform(point, "EPSG:4326", "EPSG:3857"),
+    width
+  );
+  var circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
+  const ev = getPolyginLayerSelece(circleIn4326, layers);
+  ev.data =  ev.data.filter(item=>{
+    return !(item.data && item.data.__point_lable__ );
+  })
+  return {
+    ...ev,
+    extent: circleIn4326.getExtent(),
+    geometry: circleIn4326,
+  };
 }
 export function getSelectByPolygon(layers, data) {
   const polygin = new MultiPolygonFeature({
-    coordinates:data,
+    coordinates: data,
   });
   const polygon = polygin.getGeometry();
-  return {...getPolyginLayerSelece(polygon, layers),extent:polygon.getExtent(),geometry:polygon};
+  const ev = getPolyginLayerSelece(polygon, layers);
+  ev.data = ev.data.filter(item=>{
+    return !(item.data && item.data.__point_lable__ );
+  })
+  return {
+    ...ev,
+    extent: polygon.getExtent(),
+    geometry: polygon,
+  };
 }
 
-
-function showMarkerPoint(map,point,option){
-  const mark = new Marker({...option,position:point});
+function showMarkerPoint(map, point, option) {
+  const mark = new Marker({ ...option, position: point });
   map.addOverlay(mark);
   return mark;
 }
 
-export function showMarker(map,point,option,textOption){
-  return showMarkerPoint(map,point,option);
+export function showMarker(map, point, option, textOption) {
+  return showMarkerPoint(map, point, option);
 }
 
-export function removeMarker(map,mark){
-    map.removeOverlay(mark);
+export function removeMarker(map, mark) {
+  map.removeOverlay(mark);
+}
+
+
+
+export class CircleFeature extends Feature {
+  constructor(opts, style) {
+    const {point,width } = opts;
+    const circleIn3857 = new Circle(
+      transform(point, "EPSG:4326", "EPSG:3857"),
+      width
+    );
+    const circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
+    const geometry = circleIn4326;
+    super({ geometry, ...opts });
+    if (style) {
+      this.setStyle(style);
+    }
+  }
+};
+
+export function showCircle(){
+
 }

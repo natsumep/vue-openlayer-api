@@ -29,6 +29,7 @@ import {
 	showHeatMapPoints,
 	getSelectByPoint,
 	getSelectByPolygon,
+	showMultiPolygons,
 	showMarker,
 	removeMarker
 } from "./service/operationMap";
@@ -82,7 +83,6 @@ export default {
 			});
 
 			this.map.on("click", (evt) => {
-				console.log(this,this.map)
 				let selectLayer = [];
 				this.map.forEachLayerAtPixel(
 					evt.pixel,
@@ -185,11 +185,29 @@ export default {
 		},
 		// 展示一组
 		showOneStylePolygon(polygons, style, layer) {
-			if (layer) {
+			if (!layer) {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
 			}
 			showPolygons(layer, polygons, style);
+			return layer;
+		},
+		showMoerStyleMultiPolygon(polygons, layer) {
+			if (!layer) {
+				throw "请传入图层,调用createLayer方法获取图层";
+			}
+			polygons.forEach((item) => {
+				const { polygons, style } = item;
+				this.showOneStyleMultiPolygon(polygons, style, layer);
+			});
+		},
+		// 展示一组
+		showOneStyleMultiPolygon(polygons, style, layer) {
+			if (!layer) {
+				const layerinfo = this.layerInfo.createLayer();
+				layer = layerinfo.layer;
+			}
+			showMultiPolygons(layer, polygons, style);
 			return layer;
 		},
 		showInfoWindow(id, option) {

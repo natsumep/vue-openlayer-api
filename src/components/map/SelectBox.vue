@@ -39,6 +39,9 @@ export default {
             rectangle,
             vectorLayer:this.layerList,
             statusChange: (event) =>{
+							event.data = event.data.filter(item=>{
+								return !(item.data && item.data.__point_lable__ );
+							})
 							this.$emit("select-layer",event);
               this.map.removeInteraction(this._darw);
             }
