@@ -126,7 +126,7 @@ export default {
 			this._map.map.on('singleclick',(e)=>{console.log(e)})
 			this.showLines();
 			this.showPoints();
-			// this.showClustePoint();
+			this.showClustePoint();
 			// this.showHeatMap();
 			this.getSelectByPoint();
 			this.getSelectByPolygon();
@@ -381,6 +381,7 @@ export default {
 			);
 			var fs = [];
 			while (fs.length < 110) {
+				const i = fs.length%6;
 				fs.push({
 					point: [
 						113.135599 + fs.length * 0.001,
@@ -390,7 +391,10 @@ export default {
 						title: fs.length,
 						value: fs.length,
 						style: {
-							text: {
+							icon:{
+								src:`./mapicon/${i}.png`,
+							},
+							text:{
 								text: "test",
 								offsetY: "10",
 							},

@@ -17,8 +17,8 @@ const {
   Feature,
   circularPolygon
 } = SMap;
-// import mapMark from "@/assets/images/map-marker.png";
-import mapMark from "@/assets/plugin/images/clear.png";
+import mapMark from "@/assets/images/map-marker.png";
+// import mapMark from "@/assets/plugin/images/clear.png";
 
 const defaultPointStyle = {
   icon: {
