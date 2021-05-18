@@ -394,16 +394,17 @@ export default {
 
 ##### showInfoWindow 参数说明
 
-| 名称              | 类型                                                                                                                                                                                                                                 | 说明                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| id                | string                                                                                                                                                                                                                               | 必传，同一个 id 的弹窗不会重复弹出，只会移动位置，如果需要弹出多个，需要传入不同的 id |
-| option            | object                                                                                                                                                                                                                               | -                                                                                     |
-| option.content    | string/vueComponetn                                                                                                                                                                                                                  | 支持传入 dom 字符串和 vue 组件，填充到内容区                                          |
-| option.title      | string                                                                                                                                                                                                                               | 弹窗的 title                                                                          |
-| option.event      | 地图点击事件的 event                                                                                                                                                                                                                 | 弹窗可以通过这个 event 获取到 coordinate 和 data                                      |
-| option.coordinate | coordinate[]                                                                                                                                                                                                                         | 弹窗的坐标位置，如果传入该字段 ，会忽略 event 中的坐标                                |
-| option.data       | 如果 content 是 vue 组件，那么 data 的所有字段会通过 props 的形式传入到组件中，组件必须要在 props 中声明对应的变量接收，如果是字符串 dom 会通过对应的 key 替换 dom 字符串中的${key},如果 data 是数组，弹窗内部支持切换，用于聚合图层 |
-| option.onClose    | function                                                                                                                                                                                                                             | 弹窗关闭的回调事件                                                                    |
+| 名称              | 类型                 | 说明                                                                                                                                                                                                                                 |
+| ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| id                | string               | 必传，同一个 id 的弹窗不会重复弹出，只会移动位置，如果需要弹出多个，需要传入不同的 id                                                                                                                                                |
+| option            | object               | -                                                                                                                                                                                                                                    |
+| option.content    | string/vueComponetn  | 支持传入 dom 字符串和 vue 组件，填充到内容区                                                                                                                                                                                         |
+| option.title      | string               | 弹窗的 title                                                                                                                                                                                                                         |
+| option.event      | 地图点击事件的 event | 弹窗可以通过这个 event 获取到 coordinate 和 data                                                                                                                                                                                     |
+| option.coordinate | coordinate[]         | 弹窗的坐标位置，如果传入该字段 ，会忽略 event 中的坐标                                                                                                                                                                               |
+| option.data       | object               | 如果 content 是 vue 组件，那么 data 的所有字段会通过 props 的形式传入到组件中，组件必须要在 props 中声明对应的变量接收，如果是字符串 dom 会通过对应的 key 替换 dom 字符串中的${key},如果 data 是数组，弹窗内部支持切换，用于聚合图层 |
+| option.onClose    | function             | 弹窗关闭的回调事件                |
+| option.offset | 	Array<number> （默认为[0，0]）| 放置叠加层时使用的像素偏移量。数组中的第一个元素是水平偏移量。正值将覆盖图右移。数组中的第二个元素是垂直偏移量。正值会将叠加层向下移动。|
 
 > ps dom 字符串中如果存在 ${name} 同时 data 中存在 name 属性 ，那么会 dom 中的 ${name } 替换成 data 中的 name 的值； 起到一个插值替换的效果。
 
@@ -507,18 +508,19 @@ let data = { name: "test" };
 
 > marker 向地图添加一个 img 元素或者 dom 结构的覆盖物，该元素可以随着地图移动，并可以配置拖拽和可点击等功能。
 
-| 方法       | 调用                                                        | 说明                                                                                   |
-| ---------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| showMarker | (point: Coordinate , MarkerOptions: MarkerOptions)=> marker | 通过 map 对象调用 showMarker 方法，传入坐标点和 marker 配置，渲染一个 dom 结构在地图上，返回一个marker |
-|removeMarker| (marker)=>void| 通过 map 对象调用 removeMarker 方法，传入marker，移除地图上的传入的marker|
-##### MarkerOptions 配置相关说明
-> 支持传入一个dom对象 或者 一个 url和text 配置，  如果传入了 dom 会忽略 url 和 text；
-> 
+| 方法         | 调用                                                        | 说明                                                                                                    |
+| ------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| showMarker   | (point: Coordinate , MarkerOptions: MarkerOptions)=> marker | 通过 map 对象调用 showMarker 方法，传入坐标点和 marker 配置，渲染一个 dom 结构在地图上，返回一个 marker |
+| removeMarker | (marker)=>void                                              | 通过 map 对象调用 removeMarker 方法，传入 marker，移除地图上的传入的 marker                             |
 
-|element| HTMLElement| 一个dom对象 ， 如果存在dom对象，会忽略 url 和 text|
+##### MarkerOptions 配置相关说明
+
+> 支持传入一个 dom 对象 或者 一个 url 和 text 配置， 如果传入了 dom 会忽略 url 和 text；
+
+|element| HTMLElement| 一个 dom 对象 ， 如果存在 dom 对象，会忽略 url 和 text|
 |url |string| 自定义 img 路径|
 |text| string| 自定义文字说明 出现在图片下面,不传不会渲染文字 |
-|textCss| object| 传入一个样式对象,该样式会出现在该文字的dom节点上 例如：{color:"red"}| 
+|textCss| object| 传入一个样式对象,该样式会出现在该文字的 dom 节点上 例如：{color:"red"}|
 |data| any |marker 附带数据，开启点击事件时会将该数据传递给点击事件回调|
 |dragable| boolean |是否允许拖拽，默认 false|
 |dragStart |(data: any, coordinate: Coordinate) => void |拖拽开始事件回调|
@@ -528,4 +530,4 @@ let data = { name: "test" };
 |positioning |OverlayPositioning |定义覆盖物如何相对于它的位置布局，默认 top-left|
 |offset| Array<number> |设置 overlay 相对于 position 的偏移，默认[0,0]，第一个元素代表水平偏移，第二个元素代表垂直偏移|
 |stopEvent |boolean |是否阻止覆盖物事件传播到地图，默认 true|
-|className| string| 在当前marker的外围添加一个class，方便控制样式|
+|className| string| 在当前 marker 的外围添加一个 class，方便控制样式|

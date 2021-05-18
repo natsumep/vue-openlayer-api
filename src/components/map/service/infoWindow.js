@@ -9,6 +9,7 @@ export class OpenInfoWindow {
   isVue = false;
   vueComponent  = null;
   constructor(id, option, map) {
+    this.option = option;
     this.map = map;
     this.id = id;
     const { parent, content } = option;
@@ -70,6 +71,7 @@ export class OpenInfoWindow {
       position: center,
       isAutoPosition: true,
       enableDrag: true,
+      ...this.option,
       closeCallback: () => {
         if(this.isVue){
           this.vueComponent && this.vueComponent.$destroy();

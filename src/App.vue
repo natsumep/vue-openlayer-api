@@ -152,6 +152,7 @@ export default {
 					content: `<div>\${value}</div>`,
 					title: "我是title",
 					event,
+					offset:[0,0],
 					data: {
 						value: "我是值~",
 					},
