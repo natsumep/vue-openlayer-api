@@ -270,7 +270,7 @@ export default {
 					[
 						[113.137599, 23.031483],
 						[113.127599, 23.021483],
-						[113.133599, 23.131483],
+						
 					],
 					{
 						line: [
@@ -460,7 +460,9 @@ export default {
 		},
 		// 显示一个多面
 		showMultiPolygon(){
+				// 创建一个图层 
 			const layer = this.createLayer("showMultiPolygonFeature", "showMultiPolygonFeature");;
+				// 在该图层上渲染一个多面
 			this._map.showOneStyleMultiPolygon([polygon],{
             // stroke: {color: 'red', width: 2},
 						// fill: {color: 'rgba(0,128,0, .5)'}
@@ -468,15 +470,19 @@ export default {
 							text:"我是一个面"
 						}
 				},layer)
+				// 测试移除
 				setTimeout(()=>{
-				layer.clear();
-			},10000)
+					// 图层清空所有数据
+					layer.clear();
+				},10000)
 		},
 		// 加载一个圆
 		showCircle(){
+				// 创建一个图层 
 				const layer = this.createLayer("showCircle", "showCircle");;
+				// 在该图层上渲染一个圆
 				this._map.showCircle({
-					radius:3000,
+					radius:500,
 					point:[113.185599, 23.131483 ]
 				},{
             stroke: {color: 'red', width: 2},
@@ -485,8 +491,10 @@ export default {
 							text:"我是一个圆"
 						}
 				},layer)
+				// 测试移除
 				setTimeout(()=>{
-					layer.clear();
+					// 图层清空所有数据
+					// layer.clear();
 				},10000)
 		}
 	},

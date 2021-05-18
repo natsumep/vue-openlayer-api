@@ -216,7 +216,7 @@ export default {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
 			}
-			showCircle(layer, option, style);
+			showCircle(layer, option, style,this.map);
 			return layer;
 		},
 		showInfoWindow(id, option) {

@@ -15,6 +15,7 @@ const {
   Marker,
   Label,
   Feature,
+  circularPolygon
 } = SMap;
 // import mapMark from "@/assets/images/map-marker.png";
 import mapMark from "@/assets/plugin/images/clear.png";
@@ -156,19 +157,21 @@ export function showMultiPolygons(vectorLayer, polygons, style) {
 export function showClusterPoint() {}
 
 export function getSelectByPoint(layers, point, radius) {
-  var circleIn3857 = new Circle(
-    transform(point, "EPSG:4326", "EPSG:3857"),
-    radius
-  );
-  var circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
-  const ev = getPolyginLayerSelece(circleIn4326, layers);
+  // var circleIn3857 = new Circle(
+  //   transform(point, "EPSG:4326", "EPSG:3857"),
+  //   radius
+  // );
+  // var circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
+  var circle4326 = circularPolygon(point, radius, 500);
+
+  const ev = getPolyginLayerSelece(circle4326, layers);
   ev.data =  ev.data.filter(item=>{
     return !(item.data && item.data.__point_lable__ );
   })
   return {
     ...ev,
-    extent: circleIn4326.getExtent(),
-    geometry: circleIn4326,
+    extent: circle4326.getExtent(),
+    geometry: circle4326,
   };
 }
 export function getSelectByPolygon(layers, data) {
@@ -202,16 +205,22 @@ export function removeMarker(map, mark) {
 }
 
 
-
+let getRadius = (map,radius)=>{
+  let metersPerUnit = map.getView().getProjection().getMetersPerUnit();
+  
+  let circleRadius = radius / metersPerUnit;
+  
+  return circleRadius;
+  
+  }
 export class CircleFeature extends Feature {
   constructor(opts, style) {
     const {point,radius } = opts;
     const circleIn3857 = new Circle(
-      transform(point, "EPSG:4326", "EPSG:3857"),
+      point,
       radius
     );
-    const circleIn4326 = circleIn3857.transform("EPSG:3857", "EPSG:4326");
-    const geometry = circleIn4326;
+    const geometry = circleIn3857;
     super({ geometry, ...opts });
     if (style) {
       this.setStyle(style);
@@ -219,8 +228,12 @@ export class CircleFeature extends Feature {
   }
 };
 
-export function showCircle(vectorLayer,circleOption , style){
+export function showCircle(vectorLayer,circleOption , style,map){
   const styleInfo = getPolygonStyle(style);
-  const feature = new CircleFeature(circleOption, styleInfo);
+  // const radius = getRadius(map,circleOption.radius)
+  // const feature = new CircleFeature(circleOption, styleInfo);
+  var circle4326 = circularPolygon(circleOption.point, circleOption.radius, 500);
+  const feature = new Feature(circle4326)
+  feature.setStyle(styleInfo)
   vectorLayer.addFeature(feature);
 }
