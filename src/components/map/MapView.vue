@@ -32,7 +32,8 @@ import {
 	showMultiPolygons,
 	showMarker,
 	removeMarker,
-	showCircle
+	showCircle,
+	showPathPlay
 } from "./service/operationMap";
 import { showDarw } from './service/darw'
 import SelectBox from "./SelectBox";
@@ -263,7 +264,11 @@ export default {
 		},
 		 addSelectBox(val,callback){
 			 showDarw.createDarw(this.map,this.mapLayerList,val,callback)
-    }
+		},
+		
+		showPathPlay(lines,option){
+			return showPathPlay(this.map,lines,option)
+		}
 
 	},
 };

@@ -15,7 +15,9 @@ const {
   Marker,
   Label,
   Feature,
-  circularPolygon
+  circularPolygon,
+  PathPlay,
+  LinePlayer
 } = SMap;
 import mapMark from "@/assets/images/map-marker.png";
 // import mapMark from "@/assets/plugin/images/clear.png";
@@ -236,4 +238,32 @@ export function showCircle(vectorLayer,circleOption , style,map){
   const feature = new Feature({geometry:circle4326,data:{isCircle:true,...circleOption}})
   feature.setStyle(styleInfo)
   vectorLayer.addFeature(feature);
+}
+
+
+export function showPathPlay(map,coordinates,option){
+  let metersPerUnit = map.getView().getProjection().getMetersPerUnit();
+  const player = new SMap.LinePlayer({
+    speed: 500/metersPerUnit,
+  });
+  const pathPlay = new SMap.PathPlay({map, player,
+    needPlayer:true,
+      ...option
+  });
+  const pathData =  coordinates.map(line=>{
+    return line.map(point=>{
+      if(Array.isArray(point) && point.length===2){
+        return {
+          coordinate: point,
+          type:'angle',
+        }
+      }else{
+        return point
+      }
+    })
+  })
+  pathData[0][0].type = 'start';
+  pathData[pathData.length-1][pathData[pathData.length-1].length-1].type = 'end';
+  pathPlay.addPath(pathData);
+  return pathPlay
 }

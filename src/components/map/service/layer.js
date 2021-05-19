@@ -91,7 +91,6 @@ export class LayerService {
         ? { ...option.clusterStyleOptions }
         : {};
       clusterStyleOptions.singleStyleFunction = (singleFeature) => {
-        debugger
         const style =
           (singleFeature.values_.features[0].values_.data &&
             singleFeature.values_.features[0].values_.data.style) ||
