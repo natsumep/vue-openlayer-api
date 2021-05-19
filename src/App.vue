@@ -134,6 +134,7 @@ export default {
 			// this.showPolygon();
 			this.showMultiPolygon();
 			this.showCircle();
+			this.addSelectBox();
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -500,6 +501,9 @@ export default {
 					// 图层清空所有数据
 					// layer.clear();
 				},10000)
+		},
+		addSelectBox(){
+			this._map.addSelectBox('Rect',(...data)=>{console.log(data)} ) 
 		}
 	},
 };

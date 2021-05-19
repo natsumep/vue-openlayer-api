@@ -233,7 +233,7 @@ export function showCircle(vectorLayer,circleOption , style,map){
   // const radius = getRadius(map,circleOption.radius)
   // const feature = new CircleFeature(circleOption, styleInfo);
   var circle4326 = circularPolygon(circleOption.point, circleOption.radius, 500);
-  const feature = new Feature(circle4326)
+  const feature = new Feature({geometry:circle4326,data:{isCircle:true,...circleOption}})
   feature.setStyle(styleInfo)
   vectorLayer.addFeature(feature);
 }

@@ -547,10 +547,11 @@ let data = { name: "test" };
 | showCircle | (circleOption: circleOption , StyleInfo:StyleInfo, layer)=>void | 通过 map 对象调用 showHeatMapPoints 方法，传入圆的坐标半径，圆的样式， 图层 |
 
 ##### circleOption 圆的配置
+> circleOption 中的所有数据都能在框选的时候拿到
 
 | 参数   | 类型       | 说明               |
 | ------ | ---------- | ------------------ |
 | point  | coordinate | 已知点的经纬度坐标 |
 | radius | number     | 圆的半径，单位 m   |
-
+| any | any| 其他数据| 
 > 样式配置参考上方点线面的配置

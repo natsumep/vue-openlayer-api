@@ -34,12 +34,14 @@ import {
 	removeMarker,
 	showCircle
 } from "./service/operationMap";
+import { showDarw } from './service/darw'
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
 import { showInfoWindow } from "./service/infoWindow";
 import * as SMap from "@/assets/plugin/map.js";
 const {
 	Heatmap,
+	DrawAndSelect
 } = SMap;
 export default {
 	components: {
@@ -58,6 +60,7 @@ export default {
 		return {
 			map: null,
 			layerInfo: null,
+			_darw:null,
 		};
 	},
 	mounted() {
@@ -257,7 +260,10 @@ export default {
 		},
 		removeMarker(marker){
 			removeMarker(this.map,marker)
-		}
+		},
+		 addSelectBox(val,callback){
+			 showDarw.createDarw(this.map,this.mapLayerList,val,callback)
+    }
 
 	},
 };
