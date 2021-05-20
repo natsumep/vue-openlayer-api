@@ -24,6 +24,7 @@ const polygon = [[[[113.100490251,23.065025569],[113.100491316,23.065040666],[11
 export default {
 	name: "App",
 	data() {
+		// ps 缓存this变量
 		const _this = this;
 		return {
 			_map: null,
@@ -118,13 +119,7 @@ export default {
 						},
 						{
 							url:"http://10.168.74.222:6080/arcgis/rest/services/NHDM11278/MapServer/export",
-							visible: true,
-							// extent: [
-							// 	112.43879167600005,
-							// 	22.67574396400005,
-							// 	113.370269775,
-							//   23.57403005200007,
-							// ],
+							visible: true,  // 是否默认勾选
 							label: "佛山水系",
 							type: "wms",
 							imageLoadFunction(image,src){
@@ -141,9 +136,7 @@ export default {
 								format: 'png8',
 								bboxSR: 4326,
 								imageSR: 4326,
-								ratio:1,
 								f: 'image',
-								// size:[1889*1.5,580*1.5].join(',')
 							},
 						}
 					],
