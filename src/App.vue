@@ -158,10 +158,10 @@ export default {
 			window._map_=evt.map;
 			this._map = evt;
 			setTimeout(()=>{
-					this.showLines();
+				this.showLines();
 				this.showPoints();
 				this.showClustePoint();
-				// this.showHeatMap();
+				this.showHeatMap();
 				this.getSelectByPoint();
 				this.getSelectByPolygon();
 				this.showMarker()
@@ -171,7 +171,10 @@ export default {
 				this.addSelectBox();
 				// this.showPath();	
 			},3000)
-		
+			this._map.showInfoWindow("xxxxxId",{
+				coordinate:[113.135599, 23.021483],
+				data:{}
+			})
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -456,6 +459,17 @@ export default {
 				]);
 			}
 			this._map.showHeatMapPoints(this.dataLayer.HeatMap, fs);
+			setTimeout(()=>{
+				this.dataLayer.HeatMap.getSource().clear();
+				var fss = [];
+				while (fss.length < 10) {
+					fss.push([
+						113.235599 + fs.length * Math.random() * 0.0001,
+						23.121483 + fs.length * Math.random() * 0.0001,
+					]);
+				}
+				this._map.showHeatMapPoints(this.dataLayer.HeatMap, fss);
+			},2000)
 		},
 
 
