@@ -25,7 +25,7 @@
 							<span class="title-name">{{ arrayItem.name }}</span>
 						</div>
 						<ul v-if="arrayItem.visible" class="layer-group">
-							<li v-for="(item, i) of arrayItem.array" class="" :key="i">
+							<li v-for="(item, i) of arrayItem.array" style="display:flex;" class="" :key="i">
 								<div class="layer-item" style="width: 100%">
 									<el-checkbox
 										v-model="item.visible"
@@ -42,11 +42,11 @@
 										v-if="item.front"
 										@click="_changeLayerPosition('prev', itemIndex, i)"
 										title="图层上移"
-										class="el-icon-double-left"
+										class="el-icon-arrow-up"
 									></i>
 									<i
 										nzRotate="90"
-										class="el-icon-double-right"
+										class="el-icon-arrow-down"
 										title="图层下移"
 										v-if="item.next"
 										@click="_changeLayerPosition('down', itemIndex, i)"

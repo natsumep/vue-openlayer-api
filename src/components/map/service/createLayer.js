@@ -3,7 +3,7 @@ const { GoogleTileLayer,
   TDTileLayer,
   GeoWmtsTileLayer,
   GeoWmsImageLayer,
-  GeoWfsVectorLayer, } = SMap;
+  GeoWfsVectorLayer } = SMap;
 
 export class LayerFactory {
   constructor() {}
@@ -41,6 +41,8 @@ export class LayerFactory {
         return this._createWMSLayer(layerParams);
       case "wfs":
         return this._createWFSLayer(layerParams);
+      case "foshan":
+        return this._createFoshanLayer(layerParams)
       case "vectortile":
         return this._createVectorTileLayer(layerParams);
     }
@@ -77,12 +79,28 @@ export class LayerFactory {
     });
     return wmtsLayer;
   }
-
+  _createFoshanLayer(layerParams){
+    const url = layerParams.url
+    const map = new GeoWmtsTileLayer({
+      url:`${layerParams.url}/tile/{z}/{y}/{x}`,
+    },{
+      projection:"EPSG:4326",
+    })
+    return map;
+  }
   _createWMSLayer(layerParams) {
     const url = this._getWmsUrl(layerParams);
-    const wmsLayer = new GeoWmsImageLayer({ ...layerParams, url },{
-      url:url +`?Service=WMS&layer=${layerParams.layer}&Version=1.0.0&Request=GetTile&Format=image/png&` +
-      `tilematrixset=EPSG:4326&TileMatrix=EPSG:4326:{z}&TileRow={y}&TileCol={x}`,
+    const wmsLayer = new GeoWmsImageLayer({ ...layerParams, url,
+     
+    },{
+      // imageLoadFunction(...data){
+      //   console.log(data);
+      // },
+      url:url,
+      imageLoadFunction:layerParams.imageLoadFunction||null,
+      params:{
+        ...layerParams.params
+      }
     });
     return wmsLayer;
   }

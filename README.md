@@ -396,7 +396,7 @@ export default {
 
 | 名称           | 类型                      | 说明                                      |
 | -------------- | ------------------------- | ----------------------------------------- |
-| showInfoWindow | showInfoWindow(id,option) | 传入一个坐标和 内容 和 title 生成一个弹窗 |
+| showInfoWindow | showInfoWindow(id,option) | 弹窗id, 传入一个坐标和 内容 和 title 生成一个弹窗 |
 
 ##### showInfoWindow 参数说明
 
