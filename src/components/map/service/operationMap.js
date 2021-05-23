@@ -17,7 +17,8 @@ const {
   Feature,
   circularPolygon,
   PathPlay,
-  LinePlayer
+  DrawAndSelect,
+  LinePlayer,
 } = SMap;
 import mapMark from "@/assets/images/map-marker.png";
 // import mapMark from "@/assets/plugin/images/clear.png";
@@ -78,8 +79,8 @@ export function showClusterPoints(vectorLayer, points) {
 
 export function showPoints(vectorLayer, points, style) {
   let styleInfo = getPointStyle(style);
-  const multiPointerFeature =[]
-   points.forEach((item) => {
+  const multiPointerFeature = [];
+  points.forEach((item) => {
     const coordinate = item.point || item;
     const data = item.data || null;
     const showPointText = item.data && item.data.showPointText;
@@ -93,16 +94,24 @@ export function showPoints(vectorLayer, points, style) {
       };
       styleInfo = getPointStyle(st);
     }
-    if(style.imageText){
+    if (style.imageText) {
       const st = {
         text: style.imageText,
       };
-      const sty =  new CircleStyle(st);
-      multiPointerFeature.push( new PointFeature({ coordinate, data:{
-        __point_lable__:true,
-      } }, sty));
+      const sty = new CircleStyle(st);
+      multiPointerFeature.push(
+        new PointFeature(
+          {
+            coordinate,
+            data: {
+              __point_lable__: true,
+            },
+          },
+          sty
+        )
+      );
     }
-    multiPointerFeature.push( new PointFeature({ coordinate, data }, styleInfo));
+    multiPointerFeature.push(new PointFeature({ coordinate, data }, styleInfo));
   });
   vectorLayer.addFeatures(multiPointerFeature);
 }
@@ -167,9 +176,9 @@ export function getSelectByPoint(layers, point, radius) {
   var circle4326 = circularPolygon(point, radius, 500);
 
   const ev = getPolyginLayerSelece(circle4326, layers);
-  ev.data =  ev.data.filter(item=>{
-    return !(item.data && item.data.__point_lable__ );
-  })
+  ev.data = ev.data.filter((item) => {
+    return !(item.data && item.data.__point_lable__);
+  });
   return {
     ...ev,
     extent: circle4326.getExtent(),
@@ -182,9 +191,9 @@ export function getSelectByPolygon(layers, data) {
   });
   const polygon = polygin.getGeometry();
   const ev = getPolyginLayerSelece(polygon, layers);
-  ev.data = ev.data.filter(item=>{
-    return !(item.data && item.data.__point_lable__ );
-  })
+  ev.data = ev.data.filter((item) => {
+    return !(item.data && item.data.__point_lable__);
+  });
   return {
     ...ev,
     extent: polygon.getExtent(),
@@ -206,64 +215,69 @@ export function removeMarker(map, mark) {
   map.removeOverlay(mark);
 }
 
-
-let getRadius = (map,radius)=>{
+// eslint-disable-next-line no-unused-vars
+let getRadius = (map, radius) => {
   let metersPerUnit = map.getView().getProjection().getMetersPerUnit();
-  
+
   let circleRadius = radius / metersPerUnit;
-  
+
   return circleRadius;
-  
-  }
+};
 export class CircleFeature extends Feature {
   constructor(opts, style) {
-    const {point,radius } = opts;
-    const circleIn3857 = new Circle(
-      point,
-      radius
-    );
+    const { point, radius } = opts;
+    const circleIn3857 = new Circle(point, radius);
     const geometry = circleIn3857;
     super({ geometry, ...opts });
     if (style) {
       this.setStyle(style);
     }
   }
-};
+}
 
-export function showCircle(vectorLayer,circleOption , style,map){
+export function showCircle(vectorLayer, circleOption, style, map) {
   const styleInfo = getPolygonStyle(style);
   // const radius = getRadius(map,circleOption.radius)
   // const feature = new CircleFeature(circleOption, styleInfo);
-  var circle4326 = circularPolygon(circleOption.point, circleOption.radius, 500);
-  const feature = new Feature({geometry:circle4326,data:{isCircle:true,...circleOption}})
-  feature.setStyle(styleInfo)
+  var circle4326 = circularPolygon(
+    circleOption.point,
+    circleOption.radius,
+    500
+  );
+  const feature = new Feature({
+    geometry: circle4326,
+    data: { isCircle: true, ...circleOption },
+  });
+  feature.setStyle(styleInfo);
   vectorLayer.addFeature(feature);
 }
 
-
-export function showPathPlay(map,coordinates,option){
+export function showPathPlay(map, coordinates, option) {
   let metersPerUnit = map.getView().getProjection().getMetersPerUnit();
   const player = new SMap.LinePlayer({
-    speed: 500/metersPerUnit,
+    speed: 500 / metersPerUnit,
   });
-  const pathPlay = new SMap.PathPlay({map, player,
-    needPlayer:true,
-      ...option
+  const pathPlay = new SMap.PathPlay({
+    map,
+    player,
+    needPlayer: true,
+    ...option,
   });
-  const pathData =  coordinates.map(line=>{
-    return line.map(point=>{
-      if(Array.isArray(point) && point.length===2){
+  const pathData = coordinates.map((line) => {
+    return line.map((point) => {
+      if (Array.isArray(point) && point.length === 2) {
         return {
           coordinate: point,
-          type:'angle',
-        }
-      }else{
-        return point
+          type: "angle",
+        };
+      } else {
+        return point;
       }
-    })
-  })
-  pathData[0][0].type = 'start';
-  pathData[pathData.length-1][pathData[pathData.length-1].length-1].type = 'end';
+    });
+  });
+  pathData[0][0].type = "start";
+  pathData[pathData.length - 1][pathData[pathData.length - 1].length - 1].type =
+    "end";
   pathPlay.addPath(pathData);
-  return pathPlay
+  return pathPlay;
 }
