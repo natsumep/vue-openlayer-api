@@ -23,6 +23,7 @@ export class MapService {
   map;
   constructor() {}
   baseLayers = [];
+  baseLayersConfig = [];
   getWindowScale() {
     const innerWidth = parseInt(window.innerWidth.toString(), 10);
     let scale = 1;
@@ -63,7 +64,7 @@ export class MapService {
       // ],
     };
     this.map = new Map(ele, mapOptions);
-    this.map.centerAndZoom(center, 12);
+    this.map.centerAndZoom(center, 11);
     // 添加相应的地图图层
     // this.map.addLayer(new TDTileLayer('electronic'));
     // this.map.addLayer(new TDTileLayer('road'));
@@ -84,14 +85,14 @@ export class MapService {
       };
       this.map.addControl(new ToolBarControl(options));
     }
-   
+    // this.getBaseLayers();
     // const codes = this.configService.unitInfo.codes;
     // codes &&
     //   this.mapMaskService.createMapMask(codes.split(",") || [], this.map);
     // this.getBaseLayers().forEach((item) => {
     //   this.map.addLayer(item);
     // });
-    this.getFoShanMap();
+    // this.getFoShanMap();
     const centerAndZoomControl =new CenterAndZoomControl();
     centerAndZoomControl.setCenterAndZoom(center, 12);
     // 将控件添加到地图上
@@ -117,6 +118,7 @@ export class MapService {
     const cBaseLayers = this._getLayerParams([
       { type: "tianditusatellite", hasLabel: true },
       { type: "tiandituelectronic", hasLabel: true },
+      { type: "foshanditu"}
     ]);
     const baseLayersVisible = this._getBLayersVisible();
     this.baseLayers = [];

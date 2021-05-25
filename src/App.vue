@@ -34,7 +34,7 @@ export default {
 					visible: true,
 					layers: [
 						{
-							visible: true,
+							visible: false,
 							extent: [
 								112.833129882812,
 								22.8010864257812,
@@ -119,7 +119,7 @@ export default {
 						},
 						{
 							url:"http://10.168.74.222:6080/arcgis/rest/services/NHDM11278/MapServer/export",
-							visible: true,  // 是否默认勾选
+							visible: false,  // 是否默认勾选
 							label: "佛山水系",
 							type: "wms",
 							imageLoadFunction(image,src){
@@ -172,7 +172,7 @@ export default {
 				// this.addSelectBox();
 				this.getCreateGeometryData();
 				// this.showPath();	
-			},3000)
+			},1000)
 			this._map.showInfoWindow("xxxxxId",{
 				coordinate:[113.135599, 23.021483],
 				data:{}
@@ -204,7 +204,7 @@ export default {
 						value: "我是值~",
 					},
 					onClose() {
-						alert("关闭了弹窗");
+						// alert("关闭了弹窗");
 					},
 				});
 			});
@@ -292,7 +292,7 @@ export default {
 			);
 		},
 		createLayer(name, id, callback,options) {
-			const layer = this._map.createLayer(id, callback,{...options,zIndex:999});
+			const layer = this._map.createLayer(id, callback,{...options,zIndex:999,hasAnimtion:true});
 			this.dataLayer[name] = layer;
 			return layer
 		},

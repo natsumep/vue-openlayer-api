@@ -15,6 +15,7 @@ const {
   Marker,
   Label,
   Feature,
+  ShapeStyle,
   circularPolygon,
   PathPlay,
   DrawAndSelect,
@@ -98,18 +99,16 @@ export function showPoints(vectorLayer, points, style) {
       const st = {
         text: style.imageText,
       };
-      const sty = new CircleStyle(st);
-      multiPointerFeature.push(
-        new PointFeature(
-          {
-            coordinate,
-            data: {
-              __point_lable__: true,
-            },
-          },
-          sty
-        )
-      );
+      const sty = getPointStyle({
+        ...st,
+        icon:{
+          ...style.icon,
+          opacity:1,
+        }
+      })
+      multiPointerFeature.push( new PointFeature({ coordinate, data:{
+        __point_lable__:true,
+      } }, sty));
     }
     multiPointerFeature.push(new PointFeature({ coordinate, data }, styleInfo));
   });

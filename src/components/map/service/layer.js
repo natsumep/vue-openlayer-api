@@ -33,6 +33,7 @@ export class LayerService {
       //   callback && callback(e.data,e)
       //   console.log(e)
       // })
+      this.layerList[id].hasAnimtion = options.hasAnimtion;
       this.layerList[id].eventOnClick = (e) => {
         let v, c;
         if (e.data && e.data.data && e.data.data.click) {
