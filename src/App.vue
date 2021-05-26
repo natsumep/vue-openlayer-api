@@ -212,35 +212,35 @@ export default {
 			});
 
 			// 所有的点都是统一的样式
-			this._map.showOneStylePoints(
-				[
-					[113.137599, 23.031483],
-					{
-						point: [113.136599, 23.021483],
-						data: {
-							value: "test",
-							showPointText: "showPointText",
-							click: () => {},
-						},
-					},
-				],
-				{
-					text: {
-						text: "点1",
-						fill: {},
-					},
-					icon: {
-						src: iconPng,
-					},
-					circle: {},
-				},
-				this.dataLayer.dataLayer
-			);
+			// this._map.showOneStylePoints(
+			// 	[
+			// 		[113.137599, 23.031483],
+			// 		{
+			// 			point: [113.136599, 23.021483],
+			// 			data: {
+			// 				value: "test",
+			// 				showPointText: "showPointText",
+			// 				click: () => {},
+			// 			},
+			// 		},
+			// 	],
+			// 	{
+			// 		text: {
+			// 			text: "点1",
+			// 			fill: {},
+			// 		},
+			// 		icon: {
+			// 			src: iconPng,
+			// 		},
+			// 		circle: {},
+			// 	},
+			// 	this.dataLayer.dataLayer
+			// );
 
 			// 根据不同的类型显示不同的点的样式
 		
 					var fs = [];
-			while (fs.length < 10) {
+			while (fs.length < 1) {
 				const i = fs.length%6;
 				fs.push([
 						113.135599 + fs.length * 0.01 +'' ,
