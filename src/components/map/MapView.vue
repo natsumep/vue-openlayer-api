@@ -135,22 +135,25 @@ export default {
 						(pointAnimtion === true || featureLayer[i].layer.hasAnimtion)
 					) {
 						const animation = new VerticalBounceAnimation({
-							repeat: 5,
+							repeat: 6,
 						});
 						featureLayer[i].layer.animateFeature(
 							featureLayer[i].feature,
 							animation
 						);
 					}
-					if (featureLayer[i].layer.eventOnClick) {
+					const data =  featureLayer[i].feature.values_;
+					try{
+						if (featureLayer[i].layer.eventOnClick && !data.data.__point_lable__) {
 						// const data = featureLayer[i].feature.values_.features?[featureLayer[i].feature.values_]|featureLayer[i].feature.values_.features
 						const v = featureLayer[i].layer.eventOnClick({
-							data: { data: featureLayer[i].feature.values_ },
+							data: { data },
 							originalEvent: evt.originalEvent,
 							feature: featureLayer[i].feature,
 						});
 						if (v === false) return;
 					}
+					}catch(e){}
 				}
 			});
 			this.layerInfo = new LayerService(this.map);

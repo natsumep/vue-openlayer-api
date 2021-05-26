@@ -12,6 +12,8 @@ export default {
   },
   props:['value'],
   mounted() {
+    console.log('value')
+
   },
   methods: {
     testBtn(){

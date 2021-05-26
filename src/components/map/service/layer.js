@@ -21,7 +21,7 @@ export class LayerService {
   constructor(map) {
     this.map = map;
   }
-  createLayer(id = getUUID(), callback , options) {
+  createLayer(id = getUUID(), callback, options = {}) {
     if (!this.layerList[id]) {
       const vectorLayer = new VectorLayer({
         id,
@@ -124,7 +124,7 @@ export class LayerService {
   createHeatmap(id, option) {
     if (!this.layerList[id]) {
       const {
-        gradient = ['#0000ff', '#0ff', '#0f0', '#ff0', '#f00'],
+        gradient = ["#0000ff", "#0ff", "#0f0", "#ff0", "#f00"],
         radius = 8,
         blur = 15,
       } = option;

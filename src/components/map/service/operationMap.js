@@ -106,11 +106,11 @@ export function showPoints(vectorLayer, points, style) {
           opacity:1,
         }
       })
-      multiPointerFeature.push( new PointFeature({ coordinate, data:{
+      multiPointerFeature.push( new PointFeature({ coordinate:coordinate.map(item=>item*1), data:{
         __point_lable__:true,
       } }, sty));
     }
-    multiPointerFeature.push(new PointFeature({ coordinate, data }, styleInfo));
+    multiPointerFeature.push(new PointFeature({ coordinate:coordinate.map(item=>item*1), data }, styleInfo));
   });
   vectorLayer.addFeatures(multiPointerFeature);
 }

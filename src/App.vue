@@ -159,6 +159,7 @@ export default {
 			window._map_=evt.map;
 			this._map = evt;
 			setTimeout(()=>{
+				window.appView = this;
 				this.showLines();
 				this.showPoints();
 				this.showClustePoint();
@@ -185,6 +186,7 @@ export default {
 				// 	 title:"123123",
 				// 	 event,
 				//  }
+				console.log(this);
 				this._map.showInfoWindow("dataLayer_id", {
 					content: textC,
 					title: "123123",
@@ -196,13 +198,13 @@ export default {
 			});
 			this.createLayer("moreStyleLayer", "moreStyleLayer_id", (event) => {
 				this._map.showInfoWindow("moreStyleLayer_id", {
-					content: `<div>\${value}</div>`,
+					content: textC,
 					title: "我是title",
 					event,
 					offset:[0,0],
-					data: {
-						value: "我是值~",
-					},
+					// data: {
+					// 	value: "我是值~",
+					// },
 					onClose() {
 						// alert("关闭了弹窗");
 					},
@@ -236,52 +238,50 @@ export default {
 			);
 
 			// 根据不同的类型显示不同的点的样式
-			this._map.showMoerStylePoints(
+		
+					var fs = [];
+			while (fs.length < 110) {
+				const i = fs.length%6;
+				fs.push([
+						113.135599 + fs.length * 0.001 +'' ,
+						23.021483 + fs.length * 0.001 +'',
+					]
+				);
+			}
+			fs.forEach((item,index)=>{
+				this._map.showMoerStylePoints(
 				[
-					// 第一组点
 					{
-						// 点的数组，如果只是展示 可以直接给经纬度数组，如果有点击 或者框选，需要传入对象数组！。
 						points: [
-							[113.127599, 23.031483],
 							{
-								point: [113.135599, 23.021483],
+								point: item,
 								data: {
-									value: "12",
-									click: () => {},
-								},
-							},
-						],
-						// 配置点的样式
-						style: {
-							text: {
-								text: "12",
-								offsetY: "-20",
-							},
-						},
-					},
-					{
-						// 点的数组，如果只是展示 可以直接给经纬度数组，如果有点击 或者框选，需要传入对象数组！。
-						points: [
-							[113.235599, 23.131483],
-							{
-								point: [113.236599, 23.41583],
-								data: {
+									 showPointText: "text"+index,
 									value: "test",
 									click: () => {},
 								},
 							},
 						],
 						// 配置点的样式
-						style: {
-							text: {
-								text: "test",
-								offsetY: "10",
-							},
-							imageText:{
-								text:"文字",
-								fill:{color:"red"},
-								offsetY: -15,
-							}
+					style: {
+						text: {
+                // text: item.staName,
+                offsetY: '-38',
+                fill: {
+                  color: 'red',
+                },
+                font: '12px sans-serif',
+              },
+              imageText: {
+                text: Math.random()>.5 ? "都是" : '',
+                fill: { color: '#344849' },
+                offsetY: 8,
+                font: 'bold 14px 微软雅黑',
+              },
+              icon: {
+                // eslint-disable-next-line no-nested-ternary
+                scale: 0.72,
+              },	
 						},
 					},
 
@@ -290,6 +290,9 @@ export default {
 				],
 				this.dataLayer.moreStyleLayer
 			);
+			})
+	
+
 		},
 		createLayer(name, id, callback,options) {
 			const layer = this._map.createLayer(id, callback,{...options,zIndex:999,hasAnimtion:true});
@@ -337,7 +340,7 @@ export default {
 				},
 				this.dataLayer.lineLayer
 			);
-
+			
 			//根据不同的类型显示不同的点的样式
 			this._map.showMoerStyleLines(
 				[
