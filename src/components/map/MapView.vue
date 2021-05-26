@@ -144,7 +144,7 @@ export default {
 					}
 					const data =  featureLayer[i].feature.values_;
 					try{
-						if (featureLayer[i].layer.eventOnClick && !data.data.__point_lable__) {
+						if (featureLayer[i].layer.eventOnClick && (!data.data || !data.data.__point_lable__)) {
 						// const data = featureLayer[i].feature.values_.features?[featureLayer[i].feature.values_]|featureLayer[i].feature.values_.features
 						const v = featureLayer[i].layer.eventOnClick({
 							data: { data },
