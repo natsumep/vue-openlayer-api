@@ -240,11 +240,11 @@ export default {
 			// 根据不同的类型显示不同的点的样式
 		
 					var fs = [];
-			while (fs.length < 110) {
+			while (fs.length < 10) {
 				const i = fs.length%6;
 				fs.push([
-						113.135599 + fs.length * 0.001 +'' ,
-						23.021483 + fs.length * 0.001 +'',
+						113.135599 + fs.length * 0.01 +'' ,
+						23.021483 + fs.length * 0.01 +'',
 					]
 				);
 			}

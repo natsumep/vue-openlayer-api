@@ -22,12 +22,14 @@ const {
   LinePlayer,
 } = SMap;
 import mapMark from "@/assets/images/map-marker.png";
+import { deepClone } from "./utils"
 // import mapMark from "@/assets/plugin/images/clear.png";
 
 const defaultPointStyle = {
   icon: {
     src: mapMark,
     anchor: [0.5, 1],
+    scale:1,
   },
   circle: {
     radius: 16,
@@ -37,8 +39,10 @@ const defaultPointStyle = {
     stroke: {
       color: "red",
     },
+    scale:1,
   },
   text: {
+    scale:1,
     font: " 14px sans-serif",
   },
 };
@@ -78,8 +82,8 @@ export function showClusterPoints(vectorLayer, points) {
   vectorLayer.addFeatures(multiPointerFeature);
 }
 
-export function showPoints(vectorLayer, points, style) {
-  let styleInfo = getPointStyle(style);
+export function showPoints(vectorLayer, points, style,map) {
+  let styleInfo = getMergeStyle(style);
   const multiPointerFeature = [];
   points.forEach((item) => {
     const coordinate = item.point || item;
@@ -93,13 +97,13 @@ export function showPoints(vectorLayer, points, style) {
           text: showPointText,
         },
       };
-      styleInfo = getPointStyle(st);
+      styleInfo = getMergeStyle(st);
     }
     if (style.imageText) {
       const st = {
         text: style.imageText,
       };
-      const sty = getPointStyle({
+      let sty = getMergeStyle({
         ...st,
         icon:{
           ...style.icon,
@@ -108,9 +112,37 @@ export function showPoints(vectorLayer, points, style) {
       })
       multiPointerFeature.push( new PointFeature({ coordinate:coordinate.map(item=>item*1), data:{
         __point_lable__:true,
-      } }, sty));
+      } }, ()=>{
+        const zoom = map.getView().getZoom();
+        if(zoom< 12){
+           let _sty = deepClone(sty);
+          const zo = Math.pow(.7,12- zoom );
+          _sty.icon && ( _sty.icon.scale = _sty.icon.scale * zo)
+          _sty.text && (_sty.text.scale = _sty.text.scale * zo)
+          _sty.circle &&( _sty.circle.scale = _sty.circle.scale * zo)
+          _sty.text && _sty.text.offsetY && (_sty.text.offsetY = _sty.text.offsetY * zo)
+          return  getPointStyle(_sty)
+        }
+        const style =  getPointStyle(sty)
+        return style
+      }));
     }
-    multiPointerFeature.push(new PointFeature({ coordinate:coordinate.map(item=>item*1), data }, styleInfo));
+    // multiPointerFeature.push(new PointFeature({ coordinate, data }, styleInfo));
+    multiPointerFeature.push(new PointFeature({ coordinate:coordinate.map(item=>item*1), data }, ()=>{
+      const zoom = map.getView().getZoom();
+      if(zoom< 12){
+        let _styleInfo = deepClone(styleInfo);
+        const zo = Math.pow(.7,12- zoom );
+        _styleInfo.icon && ( _styleInfo.icon.scale = _styleInfo.icon.scale  * zo)
+         _styleInfo.text && (_styleInfo.text.scale = _styleInfo.text.scale * zo)
+        _styleInfo.circle &&( _styleInfo.circle.scale = _styleInfo.circle.scale  * zo)
+        _styleInfo.text && _styleInfo.text.offsetY && (_styleInfo.text.offsetY = _styleInfo.text.offsetY * zo)
+        return getPointStyle(_styleInfo)
+      }
+      const style =  getPointStyle(styleInfo)
+      return style
+    }));
+
   });
   vectorLayer.addFeatures(multiPointerFeature);
 }

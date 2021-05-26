@@ -182,7 +182,7 @@ export default {
 				const layerinfo = this.layerInfo.createLayer();
 				layer = layerinfo.layer;
 			}
-			showPoints(layer, points, style);
+			showPoints(layer, points, style,this.map);
 			return layer;
 		},
 		showMoerStyleLines(points, layer) {
