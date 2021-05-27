@@ -18,7 +18,7 @@
 			<div
 				class="show-check show-text"
 				:class="visible && index == activeLayerIndex ? 'active' : ''"
-				@click.stop="labelLayerVisibleEvt(visible, index == activeLayerIndex,index)"
+				@click.stop="labelLayerVisibleEvt(!visible, index == activeLayerIndex,index)"
 			></div>
 			<img :src="getImg(baseLayer.layerType)" />
 			<span class="showMapName">{{ baseLayer.name }} </span>
@@ -41,10 +41,14 @@ export default {
 		map: Object,
 	},
 	created() {
+    debugger
 		this.service = new MapSwitchService(this.map);
 		this.baseLayers = this.service.baseLayers;
 		this.activeLayerIndex = this.baseLayers.length - 1;
-	},
+  },
+  mounted() {
+    console.log(this.$parent);
+  },
 	// watch:{
 	// visible(val){
 	// console.log(val);
@@ -61,13 +65,13 @@ export default {
 	methods: {
 		labelLayerVisibleEvt(isVisible, isActive,index) {
 			if (isActive) {
-				this.visible = !isVisible;
+				this.visible = isVisible;
 					const oldBaseLayer = this.baseLayers[this.activeLayerIndex];
-					this.service.setBaseLayerVisible(oldBaseLayer, !isVisible);
+					this.service.setBaseLayerVisible(oldBaseLayer, isVisible);
 					const labelLayer = oldBaseLayer.labelLayer;
 					if (labelLayer && labelLayer.active) {
 						labelLayer &&
-							this.service.setBaseLayerVisible(labelLayer, !isVisible);
+							this.service.setBaseLayerVisible(labelLayer, isVisible);
 					}
 			}else{
         this.layerSelectEvt(index)
