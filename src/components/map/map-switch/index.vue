@@ -41,13 +41,13 @@ export default {
 		map: Object,
 	},
 	created() {
-    debugger
 		this.service = new MapSwitchService(this.map);
 		this.baseLayers = this.service.baseLayers;
 		this.activeLayerIndex = this.baseLayers.length - 1;
   },
   mounted() {
     console.log(this.$parent);
+    
   },
 	// watch:{
 	// visible(val){

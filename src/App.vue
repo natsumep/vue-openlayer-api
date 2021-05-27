@@ -4,8 +4,10 @@
             <button id="pathPlayStartBtn" @click='startPath'>开始播放轨迹</button>
             <button id="pathPlayPauseBtn" @click="pausePath">暂停轨迹播放</button>
             <button id="pathPlayStopBtn" @click="stopPath">清除轨迹播放</button>
+						<button @click="changeMapExtent"> 调整水系图宽高</button>
         </div>
 		<MapView
+			ref="map"
 			:layerList="layerList"
 			@map-init="show"
 			@select-layer="showSelect"
@@ -151,14 +153,10 @@ export default {
 	components: {
 		MapView,
 	},
-	methods: {
-		showSelect(evt) {
-			console.log(evt);
-		},
-		show(evt) {
-			window._map_=evt.map;
-			this._map = evt;
-			setTimeout(()=>{
+	mounted() {
+		this.$nextTick(()=>{
+			this._map = this.$refs.map;
+			this._map.setMapVisible(false);
 				window.appView = this;
 				this.showLines();
 				this.showPoints();
@@ -173,11 +171,40 @@ export default {
 				// this.addSelectBox();
 				this.getCreateGeometryData();
 				// this.showPath();	
-			},1000)
 			this._map.showInfoWindow("xxxxxId",{
 				coordinate:[113.135599, 23.021483],
 				data:{}
 			})
+		})
+	},
+	methods: {
+		showSelect(evt) {
+			console.log(evt);
+		},
+		show(evt) {
+			// window._map_=evt.map;
+			// this._map = evt;
+			// this._map.setMapVisible(false);
+			// setTimeout(()=>{
+			// 	window.appView = this;
+			// 	this.showLines();
+			// 	this.showPoints();
+			// 	this.showClustePoint();
+			// 	this.showHeatMap();
+			// 	this.getSelectByPoint();
+			// 	this.getSelectByPolygon();
+			// 	this.showMarker()
+			// 	// this.showPolygon();
+			// 	this.showMultiPolygon();
+			// 	this.showCircle();
+			// 	// this.addSelectBox();
+			// 	this.getCreateGeometryData();
+			// 	// this.showPath();	
+			// },1000)
+			// this._map.showInfoWindow("xxxxxId",{
+			// 	coordinate:[113.135599, 23.021483],
+			// 	data:{}
+			// })
 		},
 		showPoints() {
 			this.createLayer("dataLayer", "dataLayer_id", (event, data) => {
@@ -598,6 +625,9 @@ export default {
 		stopPath(){
 			this.dataLayer.path.stop();
 		},
+		changeMapExtent(){
+			this._map.map.setExtent([112.43879167600005,22.67574396400005,113.370269775,23.57403005200007])
+		}
 	},
 };
 </script>
