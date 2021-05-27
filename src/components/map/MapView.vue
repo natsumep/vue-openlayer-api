@@ -297,8 +297,10 @@ export default {
 			return showPathPlay(this.map, lines, option);
 		},
 		setMapVisible(isVisible){
-			const ref = this.$refs.mapSwitch;
-			ref.labelLayerVisibleEvt(isVisible, true)
+			this.$nextTick(()=>{
+				const ref = this.$refs.mapSwitch;
+				ref.labelLayerVisibleEvt(isVisible, true)
+			})
 		}
 	},
 };
