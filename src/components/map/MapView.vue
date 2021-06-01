@@ -324,3 +324,41 @@ export default {
 	top: 130px;
 }
 </style>
+
+<style >
+	.map-box .ol-control button{
+		background-color: #fff;
+		font-size:0;
+		width:24px;
+		height: 24px;
+		box-sizing: border-box;
+		position: relative;
+	}
+	.map-box .ol-control .ol-zoom-in{
+		border-bottom: 1px solid #ccc;
+	}
+	.map-box .ol-control .ol-zoom-in::before,
+	.map-box .ol-control .ol-zoom-out::before,
+	.map-box .ol-control .ol-zoom-in::before,
+	.map-box .ol-control .ol-zoom-in::after{
+		content: "";
+		width:12px;
+		height: 2px;
+		background-color:#999;
+		position: absolute;	
+	 	top: 50%;
+    left: 50%;
+		transform: translate(-50%,-50%);
+	}
+	.map-box .ol-control .ol-zoom-in::after,
+	.map-box .ol-control .ol-zoom-out::after{
+		transform: translate(-50%,-50%) rotate(90deg);
+	}
+	.map-box .ol-control .ol-zoom-out::after{
+		background-color: transparent;;
+	}
+	.map-box .ol-control{
+		padding:2px;
+		box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+	}
+</style>

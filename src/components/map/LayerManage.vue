@@ -5,10 +5,11 @@
 			title="图层管理"
 			@click="onClickMe(true)"
 		>
-			<img src="@/assets/images/map-layer.png" />
+			<img src="@/assets/images/map-layer.jpg" />
 		</div>
 		<el-card class="box-card main-layerManager" v-if="managerVisible">
 			<div slot="header" class="clearfix layermanager-title">
+				<span class="layerManager-title-v"></span>
 				<span>图层管理</span>
 				<span class="el-icon-close" @click="onClickMe(false)"></span>
 			</div>
@@ -25,7 +26,12 @@
 							<span class="title-name">{{ arrayItem.name }}</span>
 						</div>
 						<ul v-if="arrayItem.visible" class="layer-group">
-							<li v-for="(item, i) of arrayItem.array" style="display:flex;" class="" :key="i">
+							<li
+								v-for="(item, i) of arrayItem.array"
+								style="display: flex"
+								class=""
+								:key="i"
+							>
 								<div class="layer-item" style="width: 100%">
 									<el-checkbox
 										v-model="item.visible"
@@ -37,20 +43,30 @@
 									class="div-layer-operations"
 									:style="(display = item.visible ? 'flex' : 'none')"
 								>
-									<i
-										nzRotate="90"
+									<div
 										v-if="item.front"
+										class="layer-operations-btn"
 										@click="_changeLayerPosition('prev', itemIndex, i)"
-										title="图层上移"
-										class="el-icon-arrow-up"
-									></i>
-									<i
-										nzRotate="90"
-										class="el-icon-arrow-down"
-										title="图层下移"
+									>
+										<i
+											nzRotate="90"
+											title="图层上移"
+											class="el-icon-arrow-up"
+										></i>
+										上移
+									</div>
+									<div
 										v-if="item.next"
+										class="layer-operations-btn"
 										@click="_changeLayerPosition('down', itemIndex, i)"
-									></i>
+									>
+										<i
+											nzRotate="90"
+											class="el-icon-arrow-down"
+											title="图层下移"
+										></i>
+										下移
+									</div>
 								</div>
 							</li>
 						</ul>
@@ -201,6 +217,16 @@ export default {
 .layer-manager-container >>> ul li {
 	text-align: left;
 }
+.layer-manager-container >>> .el-checkbox__input.is-checked .el-checkbox__inner,
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+	background-color: #61c077;
+	border-color: #61c077;
+}
+.layer-manager-container
+	>>> .el-checkbox__input.is-checked
+	+ .el-checkbox__label {
+	color: #606266;
+}
 .layer-manager {
 	width: 100%;
 	height: 100%;
@@ -209,22 +235,27 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: rgba(60, 187, 250, 0.6);
-	border: 1px solid #3cbbfa;
+	background-color: #fff;
+	border: 1px solid #fff;
 	cursor: pointer;
 	box-sizing: border-box;
+	border-radius: 4px;
+	box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%),
+		0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+}
+.layer-manager img {
+	width: 60%;
 }
 
-.layer-manager:hover {
+/* .layer-manager:hover {
 	background-color: rgba(60, 187, 250, 0.8);
-}
+} */
 
 .main-layerManager {
 	z-index: 101;
 	width: 320px;
 	top: 0;
 	right: 60px;
-	background-color: #f0f3f5;
 	box-shadow: 1px 1px 50px rgba(0, 0, 0, 0.3);
 	position: absolute;
 	transition: all 0.5s;
@@ -232,20 +263,24 @@ export default {
 
 .layermanager-title {
 	padding-left: 14px;
-	padding: 10px;
+	padding: 10px 20px;
 	height: 32px;
 	line-height: 32px;
-	border-bottom: 1px solid #eee;
 	font-size: 14px;
 	color: #333;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	background-color: #ddd;
 	border-radius: 2px 2px 0 0;
 	position: relative;
+	display: flex;
+	align-items: center;
 }
-
+.layerManager-title-v {
+	border-left: 2px solid #61c077;
+	height: 14px;
+	margin-right: 6px;
+}
 .el-icon-close {
 	position: absolute;
 	right: 15px;
@@ -316,8 +351,11 @@ export default {
 	width: 50%;
 	display: flex;
 	align-items: center;
+	cursor: pointer;
 }
-
+.layer-operations-btn:hover {
+	color: #61c077;
+}
 .div-layer-operations i {
 	cursor: pointer;
 	width: 25%;
