@@ -5,6 +5,7 @@
 			<MapSwitch
 				ref="mapSwitch"
 				:map="map"
+				:mapSet="mapSet"
 				v-if="map"
 			/>
 		</div>
@@ -63,6 +64,9 @@ export default {
 			type: Array,
 			default: [],
 		},
+		mapSet:{
+			type:Object
+		},
 		showLayerControl: { type: Boolean, default: true },
 		showSelectControl: { type: Boolean, default: true },
 	},
@@ -101,7 +105,6 @@ export default {
 					evt.pixel,
 					(layer) => {
 						if (layer) {
-							console.log(1);
 							selectLayer.push(layer);
 						}
 					},

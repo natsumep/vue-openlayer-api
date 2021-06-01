@@ -7,6 +7,12 @@
 						<button @click="changeMapExtent"> 调整水系图宽高</button>
         </div>
 		<MapView
+			:mapSet='{
+							mapType: "tiandituSatellite",
+							tiandituSatellite: [false, "tiandituSatelliteRoadLayer"],
+							tiandituMapgLayer: [false, "tiandituMapgLayerRoadLayer"],
+							foshanMapgLayer: true
+						}'
 			ref="map"
 			:layerList="layerList"
 			@map-init="show"
@@ -156,7 +162,7 @@ export default {
 	mounted() {
 		this.$nextTick(()=>{
 			this._map = this.$refs.map;
-			this._map.setMapVisible(false);
+			// this._map.setMapVisible(false);
 				window.appView = this;
 				this.showLines();
 				this.showPoints();

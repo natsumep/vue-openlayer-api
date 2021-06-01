@@ -3,9 +3,9 @@ export class MapSwitchService {
    defaultMap = null ;
    baseLayers= [];
    baselayersManager = null;
-  constructor(map) {
+  constructor(map,mapSet) {
     this.map = map;
-    this.baselayersManager = new BaselayersManager();
+    this.baselayersManager = new BaselayersManager(mapSet);
     this.initBaseLayers();
     const layers = this.baselayersManager.getBaseLayers();
     layers.forEach(item=>{

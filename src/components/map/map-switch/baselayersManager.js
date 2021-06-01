@@ -1,7 +1,5 @@
 import * as SMap from "@/assets/plugin/map.js";
-const {
-  GeoWmtsTileLayer
-} = SMap;
+const { GeoWmtsTileLayer } = SMap;
 /**
  * 基础底图类型的模式，目前支持两种:
  * * All：卫星图+电子地图
@@ -11,17 +9,29 @@ const {
  * @enum {number}
  */
 const BaselayersTypeModle = {
-  All:1,
-  Satellite:2
-}
+  All: 1,
+  Satellite: 2,
+};
 
 export class BaselayersManager {
-   preName = "customBaseLayer_"; // 底图前缀
-   baseLayersChangeHandles = [];
-   typeModle = BaselayersTypeModle.All;
-   baseLayers = [];
-  constructor() {}
-   getBaseLayerId(layerId) {
+  preName = "customBaseLayer_"; // 底图前缀
+  baseLayersChangeHandles = [];
+  typeModle = BaselayersTypeModle.All;
+  defaultLayers = {
+    mapType: "foshanMapgLayer",
+    // this.typeModle === BaselayersTypeModle.All ? "tiandituMapgLayer" : "tiandituSatellite",
+    // googleSatellite: [true, "googleRoadLayer"],
+    tiandituSatellite: [true, "tiandituSatelliteRoadLayer"],
+    tiandituMapgLayer: [true, "tiandituMapgLayerRoadLayer"],
+    foshanMapgLayer: true,
+  };
+  baseLayers = [];
+  constructor(mapSet) {
+    if(mapSet){
+      this.defaultLayers = mapSet
+    }
+  }
+  getBaseLayerId(layerId) {
     return this.preName + layerId;
   }
   /**
@@ -31,20 +41,24 @@ export class BaselayersManager {
    * @returns
    * @memberof MapService
    */
-   getBaseLayers() {
-
+  getBaseLayers() {
     const cBaseLayers = this.getBaselayerTypesConfig();
     const baseLayersVisible = this.getBLayersVisible();
     this.baseLayers = [];
     for (const layerType in cBaseLayers) {
       if (cBaseLayers.hasOwnProperty(layerType)) {
         if (
-          (layerType === "google" || layerType === "tianditu" || layerType==='foshan') &&
+          (layerType === "google" ||
+            layerType === "tianditu" ||
+            layerType === "foshan") &&
           Array.isArray(cBaseLayers[layerType])
         ) {
           for (const subLayerType of cBaseLayers[layerType]) {
             const layerId = this.getBaseLayerId(layerType + subLayerType);
-            const baseLayer = layerType === "tianditu" ? this.getTDTMap(subLayerType,layerId) : this.getFoShanMap(subLayerType,layerId);
+            const baseLayer =
+              layerType === "tianditu"
+                ? this.getTDTMap(subLayerType, layerId)
+                : this.getFoShanMap(subLayerType, layerId);
             baseLayer["id"] = layerId;
             const visible = baseLayersVisible[layerId] || false;
             baseLayer.setVisible(visible);
@@ -55,57 +69,75 @@ export class BaselayersManager {
     }
     return this.baseLayers;
   }
-   getBaselayerTypesConfig() {
+  getBaselayerTypesConfig() {
     return {
       // google: ["Satellite", "MapgLayer", "RoadLayer"],
-      tianditu: ["Satellite", "MapgLayer", "SatelliteRoadLayer","MapgLayerRoadLayer"],
-      foshan:["MapgLayer"]
+      tianditu: [
+        "Satellite",
+        "MapgLayer",
+        "SatelliteRoadLayer",
+        "MapgLayerRoadLayer",
+      ],
+      foshan: ["MapgLayer"],
     };
   }
-   getBaselayerTypes(typeMode) {
+  getBaselayerTypes(typeMode) {
     if (typeMode !== void 0 && typeMode === BaselayersTypeModle.Satellite) {
       // return ["googleSatellite", "tiandituSatellite"];
       return ["tiandituSatellite"];
     }
-    return ["tiandituSatellite", "tiandituMapgLayer","foshanMapgLayer"];
+    const arr = [];
+    for(let i in this.defaultLayers){
+      if(i!=='mapType'){
+        arr.push(i)
+      }
+    }
+    return arr;
+    // return ["tiandituSatellite", "tiandituMapgLayer", "foshanMapgLayer"];
     // return ["googleSatellite", "googleMapgLayer", "tiandituSatellite", "tiandituMapgLayer"];
   }
-  getFoShanMap(_type,id){
-    return new GeoWmtsTileLayer({
-      id,
-      url:'http://19.128.104.232:12345/ServiceAccess/MapService-T/佛山电子地图_MapService-T_CGCS2000/13954a5079cbad20a5e041fabe50eb85/tile/{z}/{y}/{x}',
-    },{
-      projection:"EPSG:4326",
-    })
+  getFoShanMap(_type, id) {
+    return new GeoWmtsTileLayer(
+      {
+        id,
+        url:
+          "http://19.128.104.232:12345/ServiceAccess/MapService-T/佛山电子地图_MapService-T_CGCS2000/13954a5079cbad20a5e041fabe50eb85/tile/{z}/{y}/{x}",
+      },
+      {
+        projection: "EPSG:4326",
+      }
+    );
   }
-  getTDTMapUrl(type){
+  getTDTMapUrl(type) {
     let mapType = "";
-    switch(type){
-      case "Satellite":  // 影像
-        mapType = 'img_c';
-        break
-        case "MapgLayer":  // 电子
-        mapType = 'vec_c';
-        break  
-        case "SatelliteRoadLayer":
-        mapType = 'cia_c';
-        break 
-         case "MapgLayerRoadLayer":
-        mapType = 'cva_c';
-        break
-
+    switch (type) {
+      case "Satellite": // 影像
+        mapType = "img_c";
+        break;
+      case "MapgLayer": // 电子
+        mapType = "vec_c";
+        break;
+      case "SatelliteRoadLayer":
+        mapType = "cia_c";
+        break;
+      case "MapgLayerRoadLayer":
+        mapType = "cva_c";
+        break;
     }
-    return `https://t{0-7}.tianditu.gov.cn/DataServer?tk=19a051ef5301849b888e322e34a162ee&T=${mapType}&x={x}&y={y}&l={z}`
+    return `https://t{0-7}.tianditu.gov.cn/DataServer?tk=19a051ef5301849b888e322e34a162ee&T=${mapType}&x={x}&y={y}&l={z}`;
   }
-  getTDTMap(type,id){
+  getTDTMap(type, id) {
     const url = this.getTDTMapUrl(type);
-    return new GeoWmtsTileLayer({
-      url,
-      id
-    },{
-      url,
-      projection:"EPSG:4326",
-    })
+    return new GeoWmtsTileLayer(
+      {
+        url,
+        id,
+      },
+      {
+        url,
+        projection: "EPSG:4326",
+      }
+    );
   }
   /**
    * 从 localStorage中 获取默认显示的底图，若没有，则设置为天地图，并写入 localStorage 中
@@ -114,7 +146,7 @@ export class BaselayersManager {
    * @type {function ()}
    * @memberof MapService
    */
-   getBLayersVisible() {
+  getBLayersVisible() {
     const defaultLayers = this.getDefaultLayers();
     // 设置默认底图可见，标注图层根据配置设置可见性
     // tslint:disable-next-line:prefer-const
@@ -128,10 +160,9 @@ export class BaselayersManager {
       (bLayerVisibleMap[this.getBaseLayerId(activeLayer[1])] = true);
     return bLayerVisibleMap;
   }
-   getDefaultLayers() {
-    try {
+  getDefaultLayers() {
+    // try {
       // let storeMap = localStorage.getItem("_defaultMap");
-      let defaultLayers;
       // if (!!storeMap) {
       //   defaultLayers = JSON.parse(storeMap);
       //   // FIXME google 被禁用，暂时这么做
@@ -141,18 +172,11 @@ export class BaselayersManager {
       //     return defaultLayers;
       //   }
       // }
-      defaultLayers = {
-        mapType:'foshanMapgLayer',
-          // this.typeModle === BaselayersTypeModle.All ? "tiandituMapgLayer" : "tiandituSatellite",
-        // googleSatellite: [true, "googleRoadLayer"],
-        tiandituSatellite: [true, "tiandituSatelliteRoadLayer"],
-        tiandituMapgLayer: [true, "tiandituMapgLayerRoadLayer"],
-        foshanMapgLayer:true,
-      };
+      
       // this.setDefaultLayers(defaultLayers);
 
-      return defaultLayers;
-    } catch (error) {}
+      return this.defaultLayers;
+    // } catch (error) {}
   }
   /**
    * 将底图配置缓存到 localStorage 中
@@ -160,7 +184,7 @@ export class BaselayersManager {
    * @param {DefaultBaseLayers} defaultLayers
    * @memberof BaselayersManager
    */
-   setDefaultLayers(defaultLayers) {
+  setDefaultLayers(defaultLayers) {
     // localStorage.setItem("_defaultMap", JSON.stringify(defaultLayers));
   }
 
@@ -169,9 +193,9 @@ export class BaselayersManager {
    *
    * @memberof MapService
    */
-   refreshBaseLayersVisible(baseLayers) {
+  refreshBaseLayersVisible(baseLayers) {
     const baseLayersVisible = this.getBLayersVisible();
-    baseLayers.forEach(baseLayer => {
+    baseLayers.forEach((baseLayer) => {
       const layerId = baseLayer["ol_uid"];
       if (this.isBaseLayer(layerId)) {
         const visible = baseLayersVisible[layerId] || false;
@@ -180,7 +204,7 @@ export class BaselayersManager {
     });
   }
   // 是否是基础地图
-   isBaseLayer(layerId) {
+  isBaseLayer(layerId) {
     return layerId.indexOf(this.preName) > -1;
   }
 
@@ -190,7 +214,7 @@ export class BaselayersManager {
    *
    * @memberof BaselayersManager
    */
-   onTypeModleChange(callback) {
+  onTypeModleChange(callback) {
     this.baseLayersChangeHandles.push(callback);
   }
   /**
@@ -199,7 +223,7 @@ export class BaselayersManager {
    *
    * @memberof BaselayersManager
    */
-   unTypeModleChange(callback) {
+  unTypeModleChange(callback) {
     for (let index = 0; index < this.baseLayersChangeHandles.length; index++) {
       const handle = this.baseLayersChangeHandles[index];
       if (handle.toString() == callback.toString()) {
@@ -217,7 +241,7 @@ export class BaselayersManager {
    * @param {BaselayersTypeModle} typeModel
    * @memberof BaselayersManager
    */
-   setTypeModle(typeModel) {
+  setTypeModle(typeModel) {
     if (this.typeModle !== typeModel) {
       this.typeModle = typeModel;
       this.typeModleChange();
@@ -229,7 +253,7 @@ export class BaselayersManager {
    * @
    * @memberof BaselayersManager
    */
-   typeModleChange() {
+  typeModleChange() {
     if (this.typeModle === BaselayersTypeModle.Satellite) {
       const defaultLayers = JSON.parse(localStorage.getItem("_defaultMap"));
       if (defaultLayers.mapType.indexOf("Satellite") < 0) {
@@ -247,7 +271,7 @@ export class BaselayersManager {
       handle(this.typeModle);
     }
   }
-   getTypeModle() {
+  getTypeModle() {
     return this.typeModle;
   }
 }

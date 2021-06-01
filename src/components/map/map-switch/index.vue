@@ -39,14 +39,15 @@ export default {
 
 	props: {
 		map: Object,
+		mapSet:Object,
 	},
 	created() {
-		this.service = new MapSwitchService(this.map);
+		this.service = new MapSwitchService(this.map,this.mapSet);
 		this.baseLayers = this.service.baseLayers;
 		this.activeLayerIndex = this.baseLayers.length - 1;
   },
   mounted() {
-    console.log(this.$parent);
+    // console.log(this.$parent);
     
   },
 	// watch:{
