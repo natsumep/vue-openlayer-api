@@ -56,9 +56,9 @@ export class MapSwitchService {
             break;
           case "foshanMapgLayer":
             layerConfig = {
-              title: "佛山底图",
+              title: "时空云",
               labelLayer: null,
-              name: "佛山底图"
+              name: "时空云"
             };
             break;
           default:
