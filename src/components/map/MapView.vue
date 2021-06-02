@@ -19,7 +19,6 @@
 		/>
 		<SelectBox
 			@select-layer="onslect"
-			:layerList="mapLayerList"
 			class="map-container selete-box"
 			v-if="map && showSelectControl"
 			:map="map"
@@ -80,15 +79,13 @@ export default {
 	mounted() {
 		this.initMap();
 	},
-	computed: {
-		mapLayerList() {
-			const list = this.layerInfo && this.layerInfo.getAllLayer();
-			return list.filter((item) => {
+	methods: {
+			mapLayerList() {
+			const list = this.layerInfo && this.layerInfo.layerList || {};
+			return Object.values(list).filter((item) => {
 				return !(item instanceof Heatmap);
 			});
 		},
-	},
-	methods: {
 		initMap() {
 			const mapService = new MapService();
 			const dom = this.$refs.map;

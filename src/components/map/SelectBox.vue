@@ -33,7 +33,8 @@ export default {
   },
 	methods: {
     handleCommand(val){
-			 showDarw.createDarw(this.map,this.layerList,val,(event)=>{
+			 const list = this.$parent.mapLayerList()
+			 showDarw.createDarw(this.map,list,val,(event)=>{
 				 this.$emit("select-layer",event);
 			 })
 			// if(this._darw){
