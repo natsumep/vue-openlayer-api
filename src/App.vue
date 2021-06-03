@@ -177,10 +177,14 @@ export default {
 				// this.addSelectBox();
 				this.getCreateGeometryData();
 				// this.showPath();	
-			this._map.showInfoWindow("xxxxxId",{
-				coordinate:[113.135599, 23.021483],
-				data:{}
-			})
+				const infow = this._map.showInfoWindow("xxxxxId",{
+					coordinate:[113.135599, 23.021483],
+					data:{}
+				})
+				setTimeout(()=>{
+					// this._map.closeInfoWindowById("xxxxxId")
+					infow.close();
+				},1000)
 		})
 	},
 	methods: {

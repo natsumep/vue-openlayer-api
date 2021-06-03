@@ -46,7 +46,7 @@ import {
 import { showDarw } from "./service/darw";
 import SelectBox from "./SelectBox";
 import LayerManage from "./LayerManage";
-import { showInfoWindow } from "./service/infoWindow";
+import { showInfoWindow ,closeInfoWindowById} from "./service/infoWindow";
 import MapSwitch from "./map-switch/index";
 import * as SMap from "@/assets/plugin/map.js";
 
@@ -248,7 +248,11 @@ export default {
 			return layer;
 		},
 		showInfoWindow(id, option) {
-			showInfoWindow(id, option, this.map);
+			const infowindowInfo =  showInfoWindow(id, option, this.map);
+			return infowindowInfo.infoWindow;
+		},
+		closeInfoWindowById(id){
+			closeInfoWindowById(id);
 		},
 		createLayer(id, callback, options) {
 			const layer = this.layerInfo.createLayer(id, callback, options);
@@ -275,10 +279,10 @@ export default {
 			this.layerInfo.setVisible(layer, visible);
 		},
 		getSelectByPoint(point, width) {
-			return getSelectByPoint(this.mapLayerList, point, width);
+			return getSelectByPoint(this.mapLayerList(), point, width);
 		},
 		getSelectByPolygon(data) {
-			return getSelectByPolygon(this.mapLayerList, data);
+			return getSelectByPolygon(this.mapLayerList(), data);
 		},
 		getCreateGeometryData(val, callback) {
 			showDarw.createDarw(this.map, [], val, callback, true);
@@ -290,7 +294,7 @@ export default {
 			removeMarker(this.map, marker);
 		},
 		addSelectBox(val, callback) {
-			showDarw.createDarw(this.map, this.mapLayerList, val, callback);
+			showDarw.createDarw(this.map, this.mapLayerList(), val, callback);
 		},
 
 		showPathPlay(lines, option) {

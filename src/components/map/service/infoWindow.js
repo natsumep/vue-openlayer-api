@@ -133,4 +133,15 @@ export function showInfoWindow(id, option, map) {
     indowWindowList[id].infoWindowContent = content;
     // document.getElementById(this.id).appendChild(instance.vm.$el);
   indowWindowList[id].showInfoWinodow(coordinate, data, title);
+  return indowWindowList[id]
+}
+
+
+export function closeInfoWindowById(id){
+  const infoW = indowWindowList[id];
+  if(!infoW){
+    console.error("未发现当前id的infowindow，确认是否已经创建当前id的infowindow")
+  }else{
+    infoW.infoWindow.close();
+  }
 }
